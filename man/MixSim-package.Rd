@@ -1,0 +1,43 @@
+\name{MixSim-package}
+\alias{MixSim-package}
+\alias{MixSim-package}
+\docType{package}
+\title{
+Simulation of Gaussian Finite Mixture Models
+}
+\description{
+Simulation of Gaussian finite mixture models for prespecified levels of average or/and maximum overlap. Pairwise overlap is defined as the sum of two misclassification probabilities
+}
+\details{
+\tabular{ll}{
+Package: \tab MixSim\cr
+Type: \tab Package\cr
+Version: \tab 1.0\cr
+Date: \tab 2009-04-20\cr
+License: \tab GPL (>= 2)\cr
+LazyLoad: \tab no\cr
+}
+Function 'MixSim' simulates a finite mixture model for a prespecified level of average or/and maximum overlap.
+
+Function 'overlap' computes all misclassification probabilities for a finite mixture model.
+
+Function 'pdplot' constructs a parallel distribution plot for a finite mixture model.
+
+Function 'simdataset' simulates a dataset from a finite mixture model.
+}
+\author{ Volodymyr Melnykov, Wei-Chen Chen, Ranjan Maitra
+
+Maintainer: Volodymyr Melnykov <volmeln@iastate.edu>
+}
+\references{
+Maitra, R. and Melnykov, V. (200?) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics.
+
+Davies, R. (1980) "The distribution of a linear combination of chi-square random variables", Applied Statistics, 29, 323-333.
+}
+\examples{
+# Simulate parameters of a mixture model
+A <- MixSim(BarOmega = 0.01, MaxOmega = 0.10, K = 10, p = 5)
+
+# Display the mixture via the parallel distribution plot
+pdplot(A$Pi, A$Mu, A$S, MaxInt = 0.5)
+}

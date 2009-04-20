@@ -1,0 +1,35 @@
+
+
+void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax);
+void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubound, double emax, double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail));
+void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail));
+void dsyev_(char *JOBZp, char *UPLOp,int *Np, double *A, int *LDAp, double *Wp, double *WORK, int *LWORK, int *INFOp);
+int vecMin(double *x, int p, double (*min));
+int vecMax(double *x, int p, double (*max));
+void Anull(double **X, int ax, int bx);
+void anulli(int *x, int p);
+void anull(double *X, int p);
+void XAXt(double **X, int p, double **A, double **Res);
+void XAXt2(double **X, int p, double **A, double ***Res, int k);
+void cpy(double **a, int nrows, int ncols, double **b);
+void cpy1(double ***a, int k, int nrows, int ncols, double **b);
+void cpy2(double **a, int nrows, int ncols, double ***b, int k);
+void tA(double **A, int a, int b, double **Res);
+void matxvec(double **a, int arows, int acols, double *x, int xrows, double *y);
+void multiply(double **a, int arows, int acols, double **b, int brows, int bcols, double **c);
+void EigValDec(int size, double *W, double **A, double (*determinant));
+void cxS(int p, int K, double ***S, double c);
+double qfc(double* lb1, double* nc1, int* n1, int *r1in, double *sigmain, double *c1in, int *lim1in, double *accin, double* trace, int* ifault);
+void genPi(int K, double PiLow, double *Pi);
+void genMu(int p, int K, double **Mu, double Ubound);
+void genSigmaEcc(int p, int K, double emax, double ***S);
+void genSphSigma(int p, int K, double ***S);
+void fprintOverlap(int K, double **OmegaMap, double BarOmega, double MaxOmega, int *rcMax);
+void printOverlap(int K, double **OmegaMap, double BarOmega, double MaxOmega, int *rcMax);
+void fprintParameters(int p, int K, double *Pi, double **Mu, double ***S);
+void printParameters(int p, int K, double *Pi, double **Mu, double ***S);
+void array1to2(int a, int b, double *y, double **x);
+void array1to3(int a, int b, int c, double *y, double ***x);
+void array2to1(int a, int b, double *y, double **x);
+void array3to1(int a, int b, int c, double *y, double ***x);
+void array3to1(int a, int b, int c, double *y, double ***x);

@@ -1,0 +1,8 @@
+libEVD.c	MixSim	libEVD.c
+libGenPars.c	mixSim	libGenPars.c
+libMatr.c	MixSim	libMatr.c
+libMixSim.c	MixSim	libMixSim.c
+libOverlap.c	MixSim	livOverlap.c
+libPrint.c	MixSim	libPrint.c
+libQF.c		MixSim	libQF.c
+libRandC.c	MixSim	libRandC.c
