@@ -1,2 +1,2 @@
-2009-04-15: Ver. 0.1-1
-  * C version of procedures
+2009-04-23: Ver. 0.1-2
+  * Build for Windows version.
