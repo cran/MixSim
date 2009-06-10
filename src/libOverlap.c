@@ -653,7 +653,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, do
 
 
 	int i, j, k, asympt, sch, rowN, colN, method;
-	double c, diff, lower, upper, eps, acc, Balpha, Malpha;
+	double c, diff, lower = 0, upper = 0, eps, acc, Balpha, Malpha;
 
 	int *fix, *fix2;
 	double **const1, **const12, **OmegaMap2;
