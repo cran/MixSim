@@ -1,70 +1,77 @@
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "array.h"
-
-#include "overlap.h"
-
-/*
-void dsyev_(char *JOBZp, char *UPLOp,int *Np, double *A, int *LDAp, double *Wp, double *WORK, int *LWORK, int *INFOp);
-*/
+#include "cephes_eigens.h"
 
 
-void EigValDec(int size, double *W, double **A, double (*determinant))
+void cephes_symmeigens_down(int p, double *eval, double **A, 
+			    double (*determinant))
 
 /*
-	returns:
-	W - vector of eigenvalues
-	A - matrix of eigenvectors 
-*/
+  input:
 
+  p - dimension of matrix
+  A - pxp symmetric matrix (only lower triangle used) destroyed on return
+
+  returns:
+  eval - vector of eigenvalues (in ascending order)
+  evec - matrix of eigenvectors 
+  determinant - determinant of the symmetric matrix (as calculated by the 
+                product of the eigenvalues
+
+*/
+	
 {
-  int i, j, INFO, N, LDA;
-  char uplo='L';
-  double *AT;
-  char JOBZ='V';
-  double *WORK;
-  int LWORK;
+	int i, j;
+	double *As, *Evec, *Evalues;
 
-  MAKE_VECTOR(AT,size*size);
-  for (i=0; i<size; i++){
-    for(j=0; j<size; j++) AT[j+size*i]=A[j][i];
-  }
+	MAKE_VECTOR(As, p * (p + 1) / 2);
 
-  N=size;
-  LDA=size;
+	for (i = 0; i < p; i++) {
+		for (j = 0; j <= i; j++) As[(i * i + i)/2 + j] = A[i][j];
+	}
 
-  LWORK=3*size-1;
-  MAKE_VECTOR(WORK,LWORK);
+	MAKE_VECTOR(Evec, p * p);	
+	MAKE_VECTOR(Evalues, p);
 
-  dsyev_ (&JOBZ, &uplo, &N, AT, &LDA, W, WORK, &LWORK, &INFO);
+	cephes_eigens(As, Evec, Evalues, p);
+	
+	for (i = 0; i < p; i++){
+		eval[i] = Evalues[p - i - 1];
+	}
 
-  if (INFO==0){
-    int i;
-    (*determinant)=1.0;
-    for (i=0;i<N;i++){
-      (*determinant)*=W[i];
-    }
-/* 
-   printf("Eigenvalues:\n ");
-    for (i=0; i<size; i++){
-      printf("%f \n",W[i]);
-    }
+	for (i = 0; i < p; i++) {
+		for (j = 0; j < p; j++){
+			A[j][p-i-1] = Evec[p * i + j];
+		}
+	}
+	                        
+
+/*
+ 	printf("EigenValues:\n");
+	for (i = 0; i < p; i++){
+		printf("EigVal: %lf \n", eval[i]);
+	}
+ 	printf("EigenVectors:\n");
+	for (i = 0; i < p; i++) {
+		for (j = 0; j < p; j++){
+			printf("%lf ", A[i][j]);
+		}
+		printf("\n");
+	}
 */
+	
+	(*determinant)=1.0;
+	
+	for (i = 0; i < p; i++) (*determinant)*=eval[i];
+	
+	FREE_VECTOR(As);
+	FREE_VECTOR(Evalues);
+	FREE_VECTOR(Evec);
 
-  }
-
-  for (i=0; i<size; i++){
-    for(j=0; j<size; j++) A[j][i]=AT[j+size*i];
-  }
-
-  if (INFO!=0){
-      printf("Problem in EigValDec:  error %d\n",INFO);
-  }
-
-  FREE_VECTOR(AT);
-  FREE_VECTOR(WORK);
-
-  return;
+	return;
 }
 

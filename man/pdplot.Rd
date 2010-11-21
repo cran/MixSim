@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Parallel Distribution Plot }
 \description{
-Constructs a parallel distribution plot for a Gaussian finite mixture model
+Constructs a parallel distribution plot for Gaussian finite mixture models
 }
 \usage{
 pdplot(Pi, Mu, S, file = NULL, Nx = 5, Ny = 5, MaxInt = 1, marg = c(2,1,1,1))
@@ -14,8 +14,8 @@ pdplot(Pi, Mu, S, file = NULL, Nx = 5, Ny = 5, MaxInt = 1, marg = c(2,1,1,1))
   \item{Mu}{ matrix consisting of components' mean vectors (K x p) }
   \item{S}{ set of components' covariance matrices (p x p x K) }
   \item{file}{ name of .pdf-file }
-  \item{Nx}{ number of color levels for smoothing along x-axis}
-  \item{Ny}{ number of color levels for smoothing along y-axis }
+  \item{Nx}{ number of color levels for smoothing along the x-axis}
+  \item{Ny}{ number of color levels for smoothing along the y-axis }
   \item{MaxInt}{ maximum color intensity }
   \item{marg}{ plot margins }
 }
@@ -24,14 +24,14 @@ If 'file' is specified, produced plot will be saved as a .pdf-file
 }
 
 \references{
-Maitra, R. and Melnykov, V. (200?) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics.
+Maitra, R. and Melnykov, V. (2010) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics, 2:19, 354-376.
 
-Davies, R. (1980) "The distribution of a linear combination of chi-square random variables", Applied Statistics, 29, 323-333.
 }
 \author{ Melnykov, V., Chen, W.-C., Maitra, R.}
 
 \seealso{ MixSim, overlap, simdataset }
 \examples{
+\dontrun{
 data(iris)
 
 K <- 3
@@ -50,6 +50,7 @@ for (k in 1:K){
 }
 
 pdplot(Pi = Pi, Mu = Mu, S = S)
+}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

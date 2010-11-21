@@ -1,30 +1,23 @@
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
 #include "array.h"
-/*
-#define MATHLIB_STANDALONE 0 */ /*It is essential to have this before the call 
-                               to the Rmath's header file because this decides
-                               the definitions to be set. */
-
-#include<Rmath.h>
 
 #include "overlap.h"
 
-/*
-void EigValDec(int size, double *W, double **A, double (*determinant));
-int vecMin(double *x, int p, double (*min));
-int vecMax(double *x, int p, double (*max));
-void Anull(double **X, int ax, int bx);
-void anull(double *X, int p);
-void XAXt(double **X, int p, double **A, double **Res);
-void cpy(double **a, int nrows, int ncols, double **b);
-void cpy2(double **a, int nrows, int ncols, double ***b, int k);
-*/
+/* WCC */
+#ifdef __HAVE_R_
+	#include <R.h>
+	#include <Rmath.h>
+#endif
 
 
-/* genSigma :
-   generates covariance matrix based on (p + 1) observations (unstable covariance matrix) */
+/* genSigma : generates covariance matrix based on (p + 1) observations (unstable covariance matrix)
+ * Parameters:
+ * 		p - number of dimensions
+ * 		VC - variance-covariance matrix
+ */
 
 void genSigma(int p, double **VC){
 
@@ -40,7 +33,12 @@ void genSigma(int p, double **VC){
 
 	for (i=0; i<n; i++){
 		for (j=0; j<p; j++){
-			x[i][j] = rnorm(0.0, 1.0);
+			/* WCC */
+			#ifdef __HAVE_R_
+				x[i][j] = rnorm(0.0, 1.0);
+			#else
+				x[i][j] = rnor(0.0, 1.0);
+			#endif
 			mu[j] = mu[j] + x[i][j];
 		}
         }
@@ -71,10 +69,15 @@ void genSigma(int p, double **VC){
 }
 
 
-/* genSigmaEcc :
-   generates covariance matrix  with prespecified eccentricity */
+/* genSigmaEcc : generates covariance matrix with prespecified eccentricity
+ * Parameters:
+ * 		p - number of dimensions
+ * 		K - number of components
+ * 		emax - maximum eccentricity
+ * 		S - set of variance-covariance matrices
+ */
 
-void genSigmaEcc(int p, int K, double emax, double ***S){
+void genSigmaEcc(int p, int K, double emax, double ***S, int hom){
 
 	int i, k;
 
@@ -87,18 +90,58 @@ void genSigmaEcc(int p, int K, double emax, double ***S){
 	MAKE_MATRIX(L, p, p);
 	MAKE_MATRIX(R, p, p);
 
-	for (k=0; k<K; k++){
+	if (hom == 0){ /* heterogeneous clusters */
+
+		for (k=0; k<K; k++){
+		
+			genSigma(p, VC);
+			cpy2(VC, p, p, S, k);
+							
+			#ifdef __HAVE_R_
+				EigValDec(p, Eig, VC, &dtmt);
+			#else
+				cephes_symmeigens_down(p, Eig, VC, &dtmt);
+			#endif
+
+			i = vecMin(Eig, p, &minL);
+			i = vecMax(Eig, p, &maxL);
+
+			e = pow(1 - minL / maxL, 0.5);
+
+			if (e > emax){
+
+				Anull(L, p, p);
+
+				for (i=0; i<p; i++){
+					Eig[i] = maxL * (1 - emax * emax * (maxL - Eig[i]) / (maxL - minL));
+					L[i][i] = Eig[i];
+				}
+
+				XAXt(VC, p, L, R);
+				cpy2(R, p, p, S, k);
+
+			}
+
+		}
+
+	} else { /* homogeneous clusters */
+	
 		genSigma(p, VC);
-		cpy2(VC, p, p, S, k);		
-
-		EigValDec(p, Eig, VC, &dtmt);
-
+		for (k=0; k<K; k++){
+			cpy2(VC, p, p, S, k);
+		}
+	
+		#ifdef __HAVE_R_
+			EigValDec(p, Eig, VC, &dtmt);
+		#else
+			cephes_symmeigens_down(p, Eig, VC, &dtmt);
+		#endif
+	
 		i = vecMin(Eig, p, &minL);
 		i = vecMax(Eig, p, &maxL);
-
+		
 		e = pow(1 - minL / maxL, 0.5);
-
-
+		
 		if (e > emax){
 
 			Anull(L, p, p);
@@ -109,11 +152,15 @@ void genSigmaEcc(int p, int K, double emax, double ***S){
 			}
 
 			XAXt(VC, p, L, R);
-			cpy2(R, p, p, S, k);
 
+			for (k=0; k<K; k++){
+				cpy2(R, p, p, S, k);
+			}
+		
 		}
-
+	
 	}
+
 
 	FREE_MATRIX(VC);
 	FREE_MATRIX(L);
@@ -123,10 +170,14 @@ void genSigmaEcc(int p, int K, double emax, double ***S){
 
 
 
-/* genSphSigma :
-   generates spherical covariance matrix */
+/* genSphSigma : generates spherical covariance matrix
+ * Parameters:
+ * 		p - number of dimensions
+ * 		K - number of components
+ * 		S - set of variance-covariance matrices
+ */
 
-void genSphSigma(int p, int K, double ***S){
+void genSphSigma(int p, int K, double ***S, int hom){
 
 	int i, k;
 	double r;
@@ -136,10 +187,23 @@ void genSphSigma(int p, int K, double ***S){
 
 	Anull(L, p, p);
 	
+	/* WCC */
+	#ifdef __HAVE_R_
+		r = runif(0.0, 1.0);
+	#else
+		r = runir(0.0, 1.0);
+	#endif
+	
 	for (k=0; k<K; k++){
 
-		r = runif(0.0, 1.0);
-		for (i=0; i<p; i++){			
+		/* WCC */
+		#ifdef __HAVE_R_
+			if (hom == 0) r = runif(0.0, 1.0);
+		#else
+			if (hom == 0) r = runir(0.0, 1.0);
+		#endif
+
+		for (i=0; i<p; i++){
 			L[i][i] = r;
 		}
 
@@ -153,18 +217,28 @@ void genSphSigma(int p, int K, double ***S){
 
 
 
-/* genSphSigma :
-   generates matrix of means */
+/* genSphSigma : generates matrix of means
+ * Parameters:
+ * 		p - number of dimensions
+ * 		K - number of components
+ * 		Mu - set of mean vectors
+ * 		Lbound - lower bound for the hypercube
+ * 		Ubound - upper bound for the hypercube
+ */
 
-void genMu(int p, int K, double **Mu, double Ubound){
+void genMu(int p, int K, double **Mu, double Lbound, double Ubound){
 		
 	int i, k;
 	
-	if (Ubound <= 0) Ubound = 1.0;
 	for (k=0; k<K; k++){
 		for (i=0; i<p; i++){
 		
-			Mu[k][i] = runif(0.0, Ubound);
+			/* WCC */
+			#ifdef __HAVE_R_
+				Mu[k][i] = runif(Lbound, Ubound);
+			#else
+				Mu[k][i] = runir(Lbound, Ubound);
+			#endif
 
 		}
 	}
@@ -173,8 +247,12 @@ void genMu(int p, int K, double **Mu, double Ubound){
 
 
 
-/* genPi :
-   generates mixing proportions */
+/* genPi : generates mixing proportions
+ * Parameters:
+ * 		K - number of components
+ * 		PiLow - smallest possible mixing proportion
+ * 		Pi - vector of mixing proportions
+ */
 
 void genPi(int K, double PiLow, double *Pi){
 
@@ -192,7 +270,12 @@ void genPi(int K, double PiLow, double *Pi){
 	} else {
 		s = 0.0;
 		for (k=0; k<K; k++){
-			Pi[k] = rgamma(1.0, 1.0);
+			/* WCC */
+			#ifdef __HAVE_R_
+				Pi[k] = rgamma(1.0, 1.0);
+			#else
+				Pi[k] = rgamma(1.0);
+			#endif
 			s += Pi[k];
 		}
 		for (k=0; k<K; k++){

@@ -1,3 +1,14 @@
+
+
+
+ /*
+   Author of this program: Robert Davies, <robert@statsresearch.co.nz>
+*/
+
+
+
+
+
 #define UseDouble 0             /* all floating point double */
 
 #include <stdio.h>

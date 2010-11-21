@@ -6,7 +6,7 @@
 Computes misclassification probabilities and pairwise overlaps for finite mixture models with Gaussian components. Overlap is defined as sum of two misclassification probabilities
 }
 \usage{
-overlap(Pi, Mu, S, eps = 1e-06, acc = 1e-06, lim = 1e06)
+overlap(Pi, Mu, S, eps = 1e-06, lim = 1e06)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +14,6 @@ overlap(Pi, Mu, S, eps = 1e-06, acc = 1e-06, lim = 1e06)
   \item{Mu}{ matrix consisting of components' mean vectors (K x p) }
   \item{S}{ set of components' covariance matrices (p x p x K) }
   \item{eps}{ error bound for overlap computation }
-  \item{acc}{ error bound for integration (Davies, 1980) }
   \item{lim}{ maximum number of integration terms (Davies, 1980) }
 }
 
@@ -25,7 +24,7 @@ overlap(Pi, Mu, S, eps = 1e-06, acc = 1e-06, lim = 1e06)
   \item{rcMax}{row and column numbers for the pair of components producing maximum overlap 'MaxOmega'}
 }
 \references{
-Maitra, R. and Melnykov, V. (200?) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics.
+Maitra, R. and Melnykov, V. (2010) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics, 2:19, 354-376.
 
 Davies, R. (1980) "The distribution of a linear combination of chi-square random variables", Applied Statistics, 29, 323-333.
 }
@@ -33,6 +32,7 @@ Davies, R. (1980) "The distribution of a linear combination of chi-square random
 
 \seealso{ MixSim, pdplot, simdataset }
 \examples{
+\dontrun{
 data(iris)
 
 p <- dim(iris)[2] - 1
@@ -52,6 +52,7 @@ for (k in 1:K){
 }
 
 overlap(Pi = Pi, Mu = Mu, S = S)
+}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

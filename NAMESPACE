@@ -1,2 +1,2 @@
 useDynLib(MixSim)
-export(MixSim, overlap, pdplot, simdataset) 
+export(MixSim, overlap, pdplot, simdataset, RandIndex, ClassProp, VarInf, perms) 

@@ -1,2 +1,0 @@
-2009-06-10: Ver. 0.1-04
-  * Fixed MAC version.

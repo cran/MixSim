@@ -1,3 +1,4 @@
+ 
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -7,6 +8,21 @@
 
 #include "overlap.h"
 
+/* WCC */
+#ifdef __HAVE_R_
+	#include <R.h>
+	#include <Rmath.h>
+#endif
+
+
+/* computes parameters needed for computing overlap
+ * p  - dimensionality
+ * K  - number of components
+ * Pi - mixing proportions
+ * Mu - mean vectors
+ * S  - covariance matrices
+ * li, di, const1 - parameters needed for computing overlap (see theory of method)
+ */
 
 void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***li, double ***di, double **const1){
 
@@ -32,11 +48,15 @@ void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***l
 	MAKE_MATRIX(L2, p, p);
 	MAKE_MATRIX(Si, p, p);
 
+
 	for (k=0; k<K; k++){
 
 		cpy1(S, k, p, p, Ga);
-		EigValDec(p, Eig, Ga, &dtmt);
-
+		#ifdef __HAVE_R_
+			EigValDec(p, Eig, Ga, &dtmt);
+		#else
+			cephes_symmeigens_down(p, Eig, Ga, &dtmt);
+		#endif
 		detS[k] = dtmt;
 
 		Anull(L, p, p);
@@ -68,10 +88,15 @@ void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***l
 
 			XAXt(Ga, p, L, Si);
 
-			EigValDec(p, Eig, Si, &dtmt);
+			#ifdef __HAVE_R_
+				EigValDec(p, Eig, Si, &dtmt);
+			#else
+				cephes_symmeigens_down(p, Eig, Si, &dtmt);
+			#endif
 			for (k=0; k<p; k++){
 				li[i][j][k] = Eig[k];
 			}
+			
 
 			multiply(L2, p, p, Ga, p, p, Ga2);
 			matxvec(Ga2, p, p, m1, p, Eig);
@@ -88,7 +113,11 @@ void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***l
 
 			XAXt(Ga2, p, L2, Si);
 
-			EigValDec(p, Eig, Si, &dtmt);
+			#ifdef __HAVE_R_
+				EigValDec(p, Eig, Si, &dtmt);
+			#else
+				cephes_symmeigens_down(p, Eig, Si, &dtmt);
+			#endif
 			for (k=0; k<p; k++){
 				li[j][i][k] = Eig[k];
 			}
@@ -105,9 +134,11 @@ void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***l
 			const1[i][j] = log((Pi[j]*Pi[j]) / (Pi[i]*Pi[i]) * detS[i]/detS[j]);
 			const1[j][i] = -const1[i][j];
 
-
 		}
+
 	}
+
+	
 
 
 	FREE_VECTOR(detS);
@@ -126,11 +157,24 @@ void ComputePars(int p, int K, double *Pi, double **Mu, double ***S, double ***l
 }
 
 
+/* calculates the map of misclassificatons
+ * c  - inflation parameter
+ * p  - dimensionality
+ * K  - number of components
+ * li, di, const1 - parameters needed for computing overlap (see theory of method)
+ * fix - fixed clusters that do not participate in inflation/deflation
+ * pars, lim - parameters for qfc function
+ * asympt - flag for regular or asymptotic overlap
+ * OmegaMap - map of misclassification probabilities
+ * BarOmega - average overlap
+ * MaxOmega - maximum overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ */
+
 
 void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double asympt, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
 
-
-	int i, j, k;
+	int i, j, k, hom;
 	double Cnst1, t, s, TotalOmega, OmegaOverlap;
 	double eps, acc, sigma;
 	
@@ -149,8 +193,7 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 
 	MAKE_VECTOR(trace, 7);
 
-	sigma = 0.0;
-
+	
 	eps = pars[0];
 	acc = pars[1];
 
@@ -165,253 +208,370 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 	j = 1;
 
 
-	if (asympt == 0){
+	/* check if clusters are homogeneous */
+	hom = 1;
+	for (k=0; k<p; k++){
+		if (li[0][1][k] != li[1][0][k]) hom = 0;
+	}
 
-		while (i < (K-1)){
 
-			if (fix[i] == 1){
-				
-				for (k=0; k<p; k++){
-					Di[k] = di[i][j][k];
-				}
+	if (hom == 1){ /* homogeneous clusters */
 
-				if (fix[j] == 1){
-					for (k=0; k<p; k++){
-						Li[k] = li[i][j][k];
-					}
-					Cnst1 = const1[i][j];
-				} else {
-			      		for (k=0; k<p; k++){
-						Li[k] = li[i][j][k] / c;
-					}	
-					Cnst1 = const1[i][j] - p * log(c);
-				}
+		if (asympt == 0){
+	
+			while (i < (K-1)){
 
-			} else {
-
+				Cnst1 = 0.0;
 				for (k=0; k<p; k++){
 					Di[k] = di[i][j][k] / pow(c, 0.5);
+					Cnst1 = Cnst1 + Di[k] * Di[k];
+					coef[k] = 0.0;
+					ncp[k] = 0.0;
 				}
 
-				if (fix[j] == 1){
-					for (k=0; k<p; k++){
-						Li[k] = c * li[i][j][k];
-					}
-					Cnst1 = const1[i][j] + p * log(c);
-				} else {
-			      		for (k=0; k<p; k++){
-						Li[k] = li[i][j][k];
-					}	
-					Cnst1 = const1[i][j];
-				}
+				t = const1[i][j] - Cnst1;
+				sigma = 2 * pow(Cnst1, 0.5);
 
-			}
-
-
-			s = 0;
-			for (k=0; k<p; k++){
-				coef[k] = Li[k] - 1.0;
-				ldprod[k] = Li[k] * Di[k];
-				const2[k] = ldprod[k] * Di[k] / coef[k];
-				s = s + const2[k];
-				ncp[k] = pow(ldprod[k] / coef[k], 2);
-			}
-			t = s + Cnst1;
-
-			OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+				OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
 
 
 
-			if (fix[j] == 1){
-				
-				for (k=0; k<p; k++){
-					Di[k] = di[j][i][k];
-				}
-
-				if (fix[i] == 1){
-					for (k=0; k<p; k++){
-						Li[k] = li[j][i][k];
-					}
-					Cnst1 = const1[j][i];
-				} else {
-			      		for (k=0; k<p; k++){
-						Li[k] = li[j][i][k] / c;
-					}	
-					Cnst1 = const1[j][i] - p * log(c);
-				}
-
-			} else {
-
+				Cnst1 = 0.0;
 				for (k=0; k<p; k++){
 					Di[k] = di[j][i][k] / pow(c, 0.5);
+					Cnst1 = Cnst1 + Di[k] * Di[k];
+					coef[k] = 0.0;
+					ncp[k] = 0.0;					
 				}
 
-				if (fix[i] == 1){
-					for (k=0; k<p; k++){
-						Li[k] = c * li[j][i][k];
-					}
-					Cnst1 = const1[j][i] + p * log(c);
-				} else {
-			      		for (k=0; k<p; k++){
-						Li[k] = li[j][i][k];
-					}	
-					Cnst1 = const1[j][i];
-				}
+				t = const1[j][i] - Cnst1;
+				sigma = 2 * pow(Cnst1, 0.5);
 
-			}
-
-			s = 0;
-			for (k=0; k<p; k++){
-				coef[k] = Li[k] - 1.0;
-				ldprod[k] = Li[k] * Di[k];
-				const2[k] = ldprod[k] * Di[k] / coef[k];
-				s = s + const2[k];
-				ncp[k] = pow(ldprod[k] / coef[k], 2);
-			}
-			t = s + Cnst1;
-
-			OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+				OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
 	
 
 
-			OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
-			TotalOmega = TotalOmega + OmegaOverlap;
+				OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
+				TotalOmega = TotalOmega + OmegaOverlap;
 
-			if (OmegaOverlap > (*MaxOmega)){
-				(*MaxOmega) = OmegaOverlap;
-				rcMax[0] = i;
-				rcMax[1] = j;
-			}
+				if (OmegaOverlap > (*MaxOmega)){
+					(*MaxOmega) = OmegaOverlap;
+					rcMax[0] = i;
+					rcMax[1] = j;
+				}
 
 			
-			if (j < (K - 1)){
-				j = j + 1;
-			} else {
-				i = i + 1;
-				j = i + 1;
+				if (j < (K - 1)){
+					j = j + 1;
+				} else {
+					i = i + 1;
+					j = i + 1;
+				}
+
 			}
 
 		}
 
-	}
 
 
 
+		if (asympt == 1){
+			
+			while (i < (K-1)){
 
-
-
-	if (asympt == 1){
-
-		while (i < (K-1)){
-
-			if (fix[i] == 1){
-				
-				if (fix[j] == 1){
+				if (const1[i][j] > 0){
+					OmegaMap[i][j] = 1;
+					OmegaMap[j][i] = 0;
+				}
 					
-					s = 0;
+				if (const1[i][j] < 0){
+					OmegaMap[i][j] = 0;
+					OmegaMap[j][i] = 1;
+				}
+				
+				if (const1[i][j] == 0){
+					OmegaMap[i][j] = 0.5;
+					OmegaMap[j][i] = 0.5;
+				}
+
+
+				OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
+				TotalOmega = TotalOmega + OmegaOverlap;
+
+				if (OmegaOverlap > (*MaxOmega)){
+					(*MaxOmega) = OmegaOverlap;
+					rcMax[0] = i;
+					rcMax[1] = j;
+				}
+
+			
+				if (j < (K - 1)){
+					j = j + 1;
+				} else {
+					i = i + 1;
+					j = i + 1;
+				}
+
+			}
+
+		}
+		
+	}	
+
+
+
+
+	if (hom == 0){ /* heterogeneous clusters */
+
+		sigma = 0.0;
+
+		if (asympt == 0){
+	
+			while (i < (K-1)){
+
+				if (fix[i] == 1){
+				
 					for (k=0; k<p; k++){
 						Di[k] = di[i][j][k];
-						Li[k] = li[i][j][k];
-						coef[k] = Li[k] - 1.0;
-						ldprod[k] = Li[k] * Di[k];
-						const2[k] = ldprod[k] * Di[k] / coef[k];
-						s = s + const2[k];
-						ncp[k] = pow(ldprod[k] / coef[k], 2);
 					}
-					t = s + const1[i][j];
 
-					OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+					if (fix[j] == 1){
+						for (k=0; k<p; k++){
+							Li[k] = li[i][j][k];
+						}
+						Cnst1 = const1[i][j];
+					} else {
+						for (k=0; k<p; k++){
+							Li[k] = li[i][j][k] / c;
+						}	
+						Cnst1 = const1[i][j] - p * log(c);
+					}
 
 				} else {
 
-					OmegaMap[i][j] = 0.0;
+					for (k=0; k<p; k++){
+						Di[k] = di[i][j][k] / pow(c, 0.5);
+					}
+
+					if (fix[j] == 1){
+						for (k=0; k<p; k++){
+							Li[k] = c * li[i][j][k];
+						}
+						Cnst1 = const1[i][j] + p * log(c);
+					} else {
+						for (k=0; k<p; k++){
+							Li[k] = li[i][j][k];
+						}	
+						Cnst1 = const1[i][j];
+					}
 
 				}
 
-			} else {
+
+				s = 0;
+				for (k=0; k<p; k++){
+					coef[k] = Li[k] - 1.0;
+					ldprod[k] = Li[k] * Di[k];
+					const2[k] = ldprod[k] * Di[k] / coef[k];
+					s = s + const2[k];
+					ncp[k] = pow(ldprod[k] / coef[k], 2);
+				}
+				t = s + Cnst1;
+
+				OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+
+
 
 				if (fix[j] == 1){
-
-					OmegaMap[i][j] = 0.0;
-
-				} else {
-			      		for (k=0; k<p; k++){
-						coef[k] = li[i][j][k] - 1.0;
-						ncp[k] = 0.0;
-					}
-					t = const1[i][j];
-
-					OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);					
-
-				}
-			}
-
-
-
-
-			if (fix[j] == 1){
 				
-				if (fix[i] == 1){
-					
-					s = 0;
 					for (k=0; k<p; k++){
 						Di[k] = di[j][i][k];
-						Li[k] = li[j][i][k];
-						coef[k] = Li[k] - 1.0;
-						ldprod[k] = Li[k] * Di[k];
-						const2[k] = ldprod[k] * Di[k] / coef[k];
-						s = s + const2[k];
-						ncp[k] = pow(ldprod[k] / coef[k], 2);
 					}
-					t = s + const1[j][i];
-				
-					OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
 
-				} else {
-
-					OmegaMap[j][i] = 0.0;
-
-				}
-
-			} else {
-
-				if (fix[i] == 1){
-
-					OmegaMap[j][i] = 0.0;
-
-				} else {
+					if (fix[i] == 1){
+						for (k=0; k<p; k++){
+							Li[k] = li[j][i][k];
+						}
+						Cnst1 = const1[j][i];
+					} else {
 			      		for (k=0; k<p; k++){
-						coef[k] = li[j][i][k] - 1.0;
-						ncp[k] = 0.0;
+							Li[k] = li[j][i][k] / c;
+						}	
+						Cnst1 = const1[j][i] - p * log(c);
 					}
-					t = const1[j][i];
-					
-					OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+
+				} else {
+
+					for (k=0; k<p; k++){
+						Di[k] = di[j][i][k] / pow(c, 0.5);
+					}
+
+					if (fix[i] == 1){
+						for (k=0; k<p; k++){
+							Li[k] = c * li[j][i][k];
+						}
+						Cnst1 = const1[j][i] + p * log(c);
+					} else {
+			      		for (k=0; k<p; k++){
+							Li[k] = li[j][i][k];
+						}	
+						Cnst1 = const1[j][i];
+					}
 
 				}
-			}
+
+				s = 0;
+				for (k=0; k<p; k++){
+					coef[k] = Li[k] - 1.0;
+					ldprod[k] = Li[k] * Di[k];
+					const2[k] = ldprod[k] * Di[k] / coef[k];
+					s = s + const2[k];
+					ncp[k] = pow(ldprod[k] / coef[k], 2);
+				}
+				t = s + Cnst1;
+
+				OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+	
 
 
-			OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
-			TotalOmega = TotalOmega + OmegaOverlap;
+				OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
+				TotalOmega = TotalOmega + OmegaOverlap;
 
-			if (OmegaOverlap > (*MaxOmega)){
-				(*MaxOmega) = OmegaOverlap;
-				rcMax[0] = i;
-				rcMax[1] = j;
-			}
+				if (OmegaOverlap > (*MaxOmega)){
+					(*MaxOmega) = OmegaOverlap;
+					rcMax[0] = i;
+					rcMax[1] = j;
+				}
 
 			
-			if (j < (K - 1)){
-				j = j + 1;
-			} else {
-				i = i + 1;
-				j = i + 1;
+				if (j < (K - 1)){
+					j = j + 1;
+				} else {
+					i = i + 1;
+					j = i + 1;
+				}
+
 			}
 
 		}
 
-	}
+
+
+
+		if (asympt == 1){
+
+			while (i < (K-1)){
+
+				if (fix[i] == 1){
+				
+					if (fix[j] == 1){
+					
+						s = 0;
+						for (k=0; k<p; k++){
+							Di[k] = di[i][j][k];
+							Li[k] = li[i][j][k];
+							coef[k] = Li[k] - 1.0;
+							ldprod[k] = Li[k] * Di[k];
+							const2[k] = ldprod[k] * Di[k] / coef[k];
+							s = s + const2[k];
+							ncp[k] = pow(ldprod[k] / coef[k], 2);
+						}
+						t = s + const1[i][j];
+
+						OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+
+					} else {
+
+						OmegaMap[i][j] = 0.0;
+
+					}
+
+				} else {
+
+					if (fix[j] == 1){
+
+						OmegaMap[i][j] = 0.0;
+
+					} else {
+			      		for (k=0; k<p; k++){
+							coef[k] = li[i][j][k] - 1.0;
+							ncp[k] = 0.0;
+						}
+						t = const1[i][j];
+
+						OmegaMap[i][j] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);					
+
+					}
+				}
+
+
+
+
+				if (fix[j] == 1){
+				
+					if (fix[i] == 1){
+					
+						s = 0;
+						for (k=0; k<p; k++){
+							Di[k] = di[j][i][k];
+							Li[k] = li[j][i][k];
+							coef[k] = Li[k] - 1.0;
+							ldprod[k] = Li[k] * Di[k];
+							const2[k] = ldprod[k] * Di[k] / coef[k];
+							s = s + const2[k];
+							ncp[k] = pow(ldprod[k] / coef[k], 2);
+						}
+						t = s + const1[j][i];
+				
+						OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+
+					} else {
+
+						OmegaMap[j][i] = 0.0;
+
+					}
+
+				} else {
+
+					if (fix[i] == 1){
+
+						OmegaMap[j][i] = 0.0;
+
+					} else {
+						for (k=0; k<p; k++){
+							coef[k] = li[j][i][k] - 1.0;
+							ncp[k] = 0.0;
+						}
+						t = const1[j][i];
+					
+						OmegaMap[j][i] = qfc(coef, ncp, df, &p, &sigma, &t, &lim, &acc, trace, &ifault);
+
+					}
+				}
+
+
+				OmegaOverlap = OmegaMap[i][j] + OmegaMap[j][i];
+				TotalOmega = TotalOmega + OmegaOverlap;
+
+				if (OmegaOverlap > (*MaxOmega)){
+					(*MaxOmega) = OmegaOverlap;
+					rcMax[0] = i;
+					rcMax[1] = j;
+				}
+
+			
+				if (j < (K - 1)){
+					j = j + 1;
+				} else {
+					i = i + 1;
+					j = i + 1;
+				}
+
+			}
+
+		}
+		
+	}	
 
 	(*BarOmega) = TotalOmega / (K * (K - 1) / 2.0);
 
@@ -433,7 +593,21 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 }
 
 
-void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
+/* computes the exact overlap
+ * p  - dimensionality
+ * K  - number of components
+ * Pi - mixing proportions
+ * Mu - mean vectors
+ * S  - covariance matrices
+ * pars, lim - parameters for qfc function
+ * OmegaMap - map of misclassification probabilities
+ * BarOmega - average overlap
+ * MaxOmega - maximum overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ */
+
+void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim,
+	double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
 
 	double c, Balpha, Malpha;
 	int asympt;
@@ -471,7 +645,23 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
 }
 
 
-/* FIND MULTIPLIER C ON THE INTERVAL (lower, upper) */
+/* FIND MULTIPLIER C ON THE INTERVAL (lower, upper)
+ * lower - lower bound of the interval
+ * upper - upper bound of the interval
+ * Omega - overlap value
+ * method - average or maximum overlap
+ * p  - dimensionality
+ * K  - number of components
+ * li, di, const1 - parameters needed for computing overlap (see theory of method)
+ * fix - fixed clusters that do not participate in inflation/deflation
+ * pars, lim - parameters for qfc function
+ * c  - inflation parameter
+ * OmegaMap - map of misclassification probabilities
+ * BarOmega - average overlap
+ * MaxOmega - maximum overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ */
+
 
 void FindC(double lower, double upper, double Omega, int method, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double (*c), double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
 
@@ -528,8 +718,33 @@ void FindC(double lower, double upper, double Omega, int method, int p, int K, d
 }
 
 
-
-void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubound, double emax, double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
+/* run the procedure when average or maximum overlap is specified
+ * 
+ * Omega - overlap value
+ * method - average or maximum overlap
+ * p  - dimensionality
+ * K  - number of components
+ * PiLow - smallest mixing proportion allowed
+ * Lbound - lower bound for uniform hypercube at which mean vectors at simulated
+ * Ubound - upper bound for uniform hypercube at which mean vectors at simulated
+ * emax - maximum eccentricity
+ * pars, lim - parameters for qfc function
+ * resN - number of resamplings allowed
+ * sph - sperical covariance matrices
+ * hom - homogeneous covariance matrices
+ * Pi - mixing proportions
+ * Mu - mean vectors
+ * S  - covariance matrices
+ * OmegaMap - map of misclassification probabilities
+ * BarOmega - average overlap
+ * MaxOmega - maximum overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ * fail - flag indicating if the process failed
+ */
+void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbound,
+	double Ubound,	double emax, double *pars, int lim, int resN, int sph, int hom,
+	double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega),
+	double (*MaxOmega), int *rcMax, int (*fail)){
 
 	int asympt, sch;
 	double c, diff, lower, upper, eps, acc, Balpha, Malpha;
@@ -552,7 +767,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubo
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
-		
+
 
 	sch = 0;
 
@@ -565,12 +780,13 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubo
 
 		genPi(K, PiLow, Pi);
 
-		genMu(p, K, Mu, Ubound);
+		genMu(p, K, Mu, Lbound, Ubound);
 		if (sph == 0){
-			genSigmaEcc(p, K, emax, S);
+			genSigmaEcc(p, K, emax, S, hom);
 		} else {
-			genSphSigma(p, K, S);
+			genSphSigma(p, K, S, hom);
 		}
+
 
 		/* prepare parameters */
 		
@@ -627,6 +843,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubo
 
 		if (sch == resN){
 			printf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
+			printf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
 			(*fail) = 1;
 			break;
 		}
@@ -647,9 +864,29 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Ubo
 
 
 
-
-
-void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
+/* run the procedure when average and maximum overlaps are both specified
+ * 
+ * p  - dimensionality
+ * K  - number of components
+ * PiLow - smallest mixing proportion allowed
+ * Lbound - lower bound for uniform hypercube at which mean vectors at simulated
+ * Ubound - upper bound for uniform hypercube at which mean vectors at simulated
+ * emax - maximum eccentricity
+ * pars, lim - parameters for qfc function
+ * resN - number of resamplings allowed
+ * sph - sperical covariance matrices
+ * Pi - mixing proportions
+ * Mu - mean vectors
+ * S  - covariance matrices
+ * OmegaMap - map of misclassification probabilities
+ * BarOmega - average overlap
+ * MaxOmega - maximum overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ * fail - flag indicating if the process failed
+ */
+void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, double emax,
+	double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S,
+	double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
 
 
 	int i, j, k, asympt, sch, rowN, colN, method;
@@ -684,6 +921,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, do
 	if ((Malpha < Balpha) | (Malpha > Balpha * K * (K - 1) / 2.0)){ /* wrong parameters*/
 
 		printf("Error: incorrect values of average and maximum overlaps...\n");
+		printf("Both conditions should hold:\n1. MaxOverlap > AverOverlap\n2. MaxOverlap < AverOverlap * K (K - 1) / 2\n");
 
 	} else {
 
@@ -696,11 +934,11 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, do
 /*			printf("Simulating dataset...\n");	*/
 
 			genPi(K, PiLow, Pi);
-			genMu(p, K, Mu, Ubound);
+			genMu(p, K, Mu, Lbound, Ubound);
 			if (sph == 0){
-				genSigmaEcc(p, K, emax, S);
+				genSigmaEcc(p, K, emax, S, 0);
 			} else {
-				genSphSigma(p, K, S);
+				genSphSigma(p, K, S, 0);
 			}
 
 			/* prepare parameters */
@@ -807,6 +1045,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Ubound, double emax, do
 
 			if (sch == resN){
 				printf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
+				printf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
 				(*fail) = 1;
 				break;
 			}

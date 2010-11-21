@@ -1,3 +1,6 @@
+
+
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
@@ -7,8 +10,7 @@
 
 
 /* Multiplies matrices a and b and puts the result in c which should be
- pre-allocated.   exit() will be called if a and b are incompatible
-*/
+ pre-allocated */
 
 void multiply(double **a, int arows, int acols,
 	      double **b, int brows, int bcols, double **c)
@@ -23,6 +25,9 @@ void multiply(double **a, int arows, int acols,
     }
 
 }
+
+/* Multiplies matrices a and b and puts the result in c[m] which should be
+ pre-allocated */
 
 void multiply2(double **a, int arows, int acols,
 	       double **b, int brows, int bcols, double ***c, int m)
@@ -39,8 +44,8 @@ void multiply2(double **a, int arows, int acols,
 }
 
 /* Multiplies matrix a and vector x and puts the result in y which should be
- pre-allocated.   exit() will be called if a and x are incompatible
-*/
+ pre-allocated */
+
 void matxvec(double **a, int arows, int acols,
 		double *x, int xrows, double *y)
 {
@@ -56,7 +61,8 @@ void matxvec(double **a, int arows, int acols,
 }
 
 
-/*copy matrix A to matrix B*/
+/*copies matrix A to matrix B*/
+
 void cpy(double **a, int nrows, int ncols, double **b)
 {
   int i,j;
@@ -69,7 +75,8 @@ void cpy(double **a, int nrows, int ncols, double **b)
 }
 
 
-/*copy matrix A[k] to matrix B */
+/*copies matrix A[k] to matrix B */
+
 void cpy1(double ***a, int k, int nrows, int ncols, double **b)
 {
   int i,j;
@@ -81,7 +88,8 @@ void cpy1(double ***a, int k, int nrows, int ncols, double **b)
 
 }
 
-/*copy matrix A to matrix B[k] */
+/*copies matrix A to matrix B[k] */
+
 void cpy2(double **a, int nrows, int ncols, double ***b, int k)
 {
   int i,j;
@@ -93,6 +101,8 @@ void cpy2(double **a, int nrows, int ncols, double ***b, int k)
 
 }
 
+
+/* finds the smallest element in x */
 
 int vecMin(double *x, int p, double (*min)){
 
@@ -113,6 +123,8 @@ int vecMin(double *x, int p, double (*min)){
 }
 
 
+/* finds the largest element in x */
+
 int vecMax(double *x, int p, double (*max)){
 
 	int i, maxN;
@@ -132,7 +144,7 @@ int vecMax(double *x, int p, double (*max)){
 }
 
 
-
+/* multiplies x by x' */
 
 int vec11vecSQ(double *y, int p, double **Res){
 	
@@ -148,6 +160,8 @@ int vec11vecSQ(double *y, int p, double **Res){
 }
 
 
+/* multiplies x' by y */
+
 double vecNNvec(int p, double *y, double *x){
 	
 	int i;
@@ -161,6 +175,8 @@ double vecNNvec(int p, double *y, double *x){
 	return Res;
 }
 
+
+/* subtracts matrices */
 
 int mat_(int a, int b,double **Res, double **Y){
 	
@@ -176,6 +192,7 @@ int mat_(int a, int b,double **Res, double **Y){
 }
 
 
+/* finds sums of rows in matrix */ 
 
 int vecsum(int a, int b,double **OO, double *Res){
 	
@@ -191,6 +208,8 @@ int vecsum(int a, int b,double **OO, double *Res){
 	return 0;
 }
 
+
+/* multiplies OO by OO' */
 
 int MatrixProd(double **OO, int p, int m, double **Res){
      
@@ -208,6 +227,8 @@ int MatrixProd(double **OO, int p, int m, double **Res){
      return 0;
 }
 
+
+/* computes Kronecker product */
 
 int Kronecker(double **A, int a1, int a2, double **B, int b1, int b2, double **Res){
 
@@ -262,6 +283,8 @@ int Kronecker(double **A, int a1, int a2, double **B, int b1, int b2, double **R
 }
 
 
+/* computes G matrix */
+
 int Gmat(int p, int m, double **Res){
      
      int a,b,i,i1,i2,n,ind;
@@ -300,6 +323,8 @@ int Gmat(int p, int m, double **Res){
 }
 
 
+/* provides transpose */
+
 void tA(double **A, int a, int b, double **Res){
 
 	int i,j;
@@ -312,6 +337,8 @@ void tA(double **A, int a, int b, double **Res){
 	
 }
 
+
+/* computes product of three matrices */
 
 int ZXY(double **Z, int az, int bz, double **X, int ax, int bx, double **Y, int ay, int by, double **Res){
 
@@ -329,6 +356,7 @@ int ZXY(double **Z, int az, int bz, double **X, int ax, int bx, double **Y, int 
 }
 
 
+/* Computes X %*% A %*% t(X) */
 
 void XAXt(double **X, int p, double **A, double **Res){
 
@@ -367,6 +395,7 @@ void XAXt2(double **X, int p, double **A, double ***Res, int k){
 
 }
 
+/* provides 0-matrix */
 
 void Anull(double **X, int ax, int bx){
      
@@ -380,6 +409,8 @@ void Anull(double **X, int ax, int bx){
 }
 
 
+/* provides 0-vector */
+
 void anull(double *x, int p){
      
      int i;
@@ -389,6 +420,8 @@ void anull(double *x, int p){
      }
 }
 
+
+/* provides 0-matrix of integers */
 
 void Anulli(int **X, int ax, int bx){
      
@@ -402,6 +435,8 @@ void Anulli(int **X, int ax, int bx){
 }
 
 
+/* provides 0-vector of integers */
+
 void anulli(int *x, int p){
      
      int i;
@@ -411,6 +446,8 @@ void anulli(int *x, int p){
      }
 }
 
+
+/* transforms matrix into vector */
 
 int asvector(double **X, int ax, int bx, double *ResVec){
      
@@ -430,6 +467,8 @@ int asvector(double **X, int ax, int bx, double *ResVec){
 }
 
 
+/* multiplies 3d array by constant  */
+
 void cxS(int p, int K, double ***S, double c){
 
 	int i, j, k;
@@ -443,3 +482,251 @@ void cxS(int p, int K, double ***S, double c){
 	}
 
 }
+
+
+
+void array1to2(int a, int b, double *y, double **x){
+
+	int i, j, k;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+
+			x[i][j] = y[k];
+			k++;
+
+		}
+	}
+	
+	
+}
+
+void array1to2i(int a, int b, int *y, int **x){
+
+	int i, j, k;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+
+			x[i][j] = y[k];
+			k++;
+
+		}
+	}
+	
+	
+}
+
+void array1to3(int a, int b, int c, double *y, double ***x){
+
+	int i, j, k, m;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+			for (m=0; m<c; m++){
+
+				x[i][j][m] = y[k];
+				k++;
+			
+			}
+		}
+	}
+	
+	
+}
+
+
+void array2to1(int a, int b, double *y, double **x){
+
+	int i, j, k;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+
+			y[k] = x[i][j];
+			k++;
+
+		}
+	}
+	
+	
+}
+
+void array2to1i(int a, int b, int *y, int **x){
+
+	int i, j, k;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+
+			y[k] = x[i][j];
+			k++;
+
+		}
+	}
+	
+	
+}
+
+void array3to1(int a, int b, int c, double *y, double ***x){
+
+	int i, j, k, m;
+
+	k = 0;
+	for (i=0; i<a; i++){
+		for (j=0; j<b; j++){
+			for (m=0; m<c; m++){
+
+				y[k] = x[i][j][m];
+				k++;
+			
+			}
+		}
+	}
+	
+	
+}
+
+
+void AllPerms(int size,int **perms){
+
+     int sch,i,j,v,w,finish,flag,ind;
+     double **pat;
+     int *cn;
+
+  sch=0;
+  i=0;
+  j=-1;
+  flag=0;
+  finish=0;
+  ind=0;
+
+  MAKE_MATRIX(pat,size,size);
+  for (v=0; v<size; v++){
+    for (w=0; w<size; w++){
+      pat[v][w]=0;
+    }
+  }
+
+  MAKE_VECTOR(cn,size);
+  for (v=0; v<size; v++){
+    cn[v]=0;
+  }
+  
+
+  while (finish==0){
+    
+    if (j != (size-1)){
+      j=j+1;
+    } else {
+      if (flag==1){
+	j=0;
+	i=i+1;
+	flag=0;
+      }
+    }
+    
+    if (pat[i][j]==0){
+      for (v=0; v<size; v++){
+	      pat[i][v]=1;
+	      pat[v][j]=1;
+      }
+      
+      sch=sch+1;
+      cn[sch-1]=j;
+      flag=1;
+    }
+
+    if ((sch==size) & (flag==1)){
+      
+//      for (v=0; v<size; v++){
+//	      if (cn[a]==b){
+//	         printf(" %i",cn[v]);
+//          }
+//      }
+//	         printf(" \n");
+
+      for (v=0; v<size; v++){
+          perms[ind][v]=cn[v];
+      }
+
+      ind++;
+      flag=0;
+      sch=sch-1;
+      i=i-1;
+      j=cn[sch-1];
+      sch=sch-1;
+      
+      for (v=0; v<size; v++){
+	      for (w=0; w<size; w++){
+	          pat[v][w]=0;
+          }
+      }
+
+      for (v=0; v<sch; v++){
+	      for (w=0; w<size; w++){
+	          pat[v][w]=1;
+	          pat[w][cn[v]]=1;
+          }
+      }    
+      
+    }
+
+
+
+    if ((j==(size-1)) & (flag==0)){
+      i=i-1;
+      j=cn[sch-1];
+      sch=sch-1;
+
+      for (v=0; v<size; v++){
+	      for (w=0; w<size; w++){
+	          pat[v][w]=0;
+          }
+      }
+
+      if (sch>0){
+	     for (v=0; v<sch; v++){
+	         for (w=0; w<size; w++){
+	             pat[v][w]=1;
+	             pat[w][cn[v]]=1;
+             }
+         }    
+
+      }
+
+      if (i>=0){
+	     pat[i][j]=1;
+      }
+
+    }
+
+    if (sch==-1){
+      finish=1;
+    }
+
+  }
+
+  FREE_MATRIX(pat);
+  FREE_VECTOR(cn);
+
+}
+
+
+int Factorial(int a){
+    int i;
+    int res;
+    
+    res=1;
+    for (i=1; i<(a+1); i++){
+        res=res*i;
+    }
+    
+    return res;
+}
+

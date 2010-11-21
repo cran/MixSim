@@ -9,7 +9,9 @@
 #include "overlap.h"
 
 
-void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1, double *pars, int (*lim1), double *OmegaMap1, double (*BarOmega), double (*MaxOmega), int *rcMax){
+void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
+	double *pars, int (*lim1), double *OmegaMap1, double (*BarOmega), double (*MaxOmega),
+	int *rcMax){
 
 	double **Mu, **OmegaMap;
 	double ***S;
@@ -48,14 +50,18 @@ void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1, 
 
 
 
-void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1), double (*PiLow1), double (*Ubound1), double (*emax1), double *pars, int (*lim1), int (*resN1), int (*sph1), double *Pi, double *Mu1, double *S1, double *OmegaMap1, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
+void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1), 
+	double (*PiLow1), double (*Lbound1), double (*Ubound1), double (*emax1),
+	double *pars, int (*lim1), int (*resN1), int (*sph1), int (*hom1),
+	double *Pi, double *Mu1, double *S1, double *OmegaMap1,	double (*BarOmega),
+	double (*MaxOmega), int *rcMax, int (*fail)){
 
 
 	double **Mu, **OmegaMap;
 	double ***S;
 
-	int fail1, p, K, lim, method, resN, sph;
-	double BarOmega1, MaxOmega1, Omega, PiLow, Ubound, emax;
+	int fail1, p, K, lim, method, resN, sph, hom;
+	double BarOmega1, MaxOmega1, Omega, PiLow, Lbound, Ubound, emax;
 
 	GetRNGstate();
 
@@ -72,13 +78,16 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1), doubl
 	method = (*method1);
 	resN = (*resN1);
 	sph = (*sph1);
+	hom = (*hom1);
 	
 	Omega = (*Omega1);
 	PiLow = (*PiLow1);
+	Lbound = (*Lbound1);
 	Ubound = (*Ubound1);
 	emax = (*emax1);
 
-	OmegaClust(Omega, method, p, K, PiLow, Ubound, emax, pars, lim, resN, sph, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, rcMax, &fail1);
+	OmegaClust(Omega, method, p, K, PiLow, Lbound, Ubound, emax, pars, lim, resN,
+		sph, hom, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, rcMax, &fail1);
 
 	(*BarOmega) = BarOmega1;
 	(*MaxOmega) = MaxOmega1;
@@ -100,14 +109,17 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1), doubl
 
 
 
-void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Ubound1), double (*emax1), double *pars, int (*lim1), int (*resN1), int (*sph1), double *Pi, double *Mu1, double *S1, double *OmegaMap1, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
+void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Lbound1),
+	double (*Ubound1), double (*emax1), double *pars, int (*lim1), int (*resN1),
+	int (*sph1), double *Pi, double *Mu1, double *S1, double *OmegaMap1,
+	double (*BarOmega), double (*MaxOmega),	int *rcMax, int (*fail)){
 
 
 	double **Mu, **OmegaMap;
 	double ***S;
 
 	int fail1, p, K, lim, resN, sph;
-	double BarOmega1, MaxOmega1, PiLow, Ubound, emax;
+	double BarOmega1, MaxOmega1, PiLow, Lbound, Ubound, emax;
 
 
 	GetRNGstate();
@@ -127,13 +139,14 @@ void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Ubound
 	sph = (*sph1);
 	
 	PiLow = (*PiLow1);
+	Lbound = (*Lbound1);	
 	Ubound = (*Ubound1);
 	emax = (*emax1);
 	
 	BarOmega1 = (*BarOmega);
 	MaxOmega1 = (*MaxOmega);
 
-	OmegaBarOmegaMax(p, K, PiLow, Ubound, emax, pars, lim, resN, sph, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, rcMax, &fail1);
+	OmegaBarOmegaMax(p, K, PiLow, Lbound, Ubound, emax, pars, lim, resN, sph, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, rcMax, &fail1);
 
 	(*BarOmega) = BarOmega1;
 	(*MaxOmega) = MaxOmega1;
@@ -152,3 +165,92 @@ void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Ubound
 
 }
 
+		
+
+
+void runAdjRand(int (*n), int (*K1), int (*K2), int *id1, int *id2, double (*Rand), double (*aRand), double (*F)){
+
+	double Rand1, aRand1, F1;
+
+	int n1, K11, K21;
+
+	n1 = (*n);
+	K11 = (*K1);
+	K21 = (*K2);		
+
+	Rand1 = (*Rand);
+	aRand1 = (*aRand);
+	F1 = (*F);
+	
+	RRand(n1, K11, K21, id1, id2, &Rand1, &aRand1, &F1);
+
+	(*Rand) = Rand1;
+	(*aRand) = aRand1;
+	(*F) = F1;
+
+}
+
+
+
+
+void runProAgree(int (*n), int (*K1), int (*K2), int *id1, int *id2, double (*maxPro)){
+
+	double maxPro1;
+
+	int n1, K11, K21;
+
+	n1 = (*n);
+	K11 = (*K1);
+	K21 = (*K2);		
+
+	maxPro1 = (*maxPro);
+	
+	proAgree(n1, K11, K21, id1, id2, &maxPro1);
+
+	(*maxPro) = maxPro1;
+
+}
+
+
+
+
+void runVarInf(int (*n), int (*K1), int (*K2), int *id1, int *id2, double (*VI)){
+
+	double VI1;
+
+	int n1, K11, K21;
+
+	n1 = (*n);
+	K11 = (*K1);
+	K21 = (*K2);		
+
+	VI1 = (*VI);
+	
+	VIindex(n1, K11, K21, id1, id2, &VI1);
+
+	(*VI) = VI1;
+
+}
+
+
+
+
+void runPerms(int (*n1), int (*permN1), int *perms){
+
+	int permN, n;
+	int **permMat;
+
+	permN = (*permN1);
+	n = (*n1);
+
+	MAKE_MATRIX(permMat, permN, n);
+	
+	array1to2i(permN, n, perms, permMat);
+
+	AllPerms(n, permMat);
+	
+	array2to1i(permN, n, perms, permMat);
+	
+	FREE_MATRIX(permMat);
+	
+}

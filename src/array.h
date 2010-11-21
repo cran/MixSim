@@ -1,3 +1,23 @@
+
+ /*
+   Author: Rouben Rostamian, <rostamian@umbc.edu>
+   June 2000
+   Revised Jul 2000
+   Revised Sep 2002
+   Revised Jun 2003 - macros don't call exit anymore
+                      changed macro names to all-caps
+   Revised Aug 2003 - changed reserved names to all caps
+   Revised Dec 2003 - changed array index types to size_t (were int)
+                    - added an "out of memory" message, printed to stderr
+                    - most FREE* macros now come before MAKE* macros,
+		      for possible improved efficiency in preprocessing
+*/
+
+
+
+
+
+
 /* array.h
 
    o This file defines the following macros:

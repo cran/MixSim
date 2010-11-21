@@ -228,6 +228,11 @@ ConstractPDPlot <- function(x, Pi, sd, file, Ny, Nx, MaxInt, marg){
 
 pdplot <- function(Pi, Mu, S, file = NULL, Nx = 5, Ny = 5, MaxInt = 1.0, marg = c(2,1,1,1)){
 
+	if (sum((Pi <= 0) | (Pi >= 1)) != 0) stop("Wrong vector of mixing proportions Pi...\n")
+	if (Nx < 1) stop("Wrong value of Nx...\n")
+	if (Ny < 1) stop("Wrong value of Ny...\n")
+	if ((MaxInt < 0) | (MaxInt > 1)) stop("Wrong value of MaxInt...\n")
+
 	K <- dim(Mu)[1]
 	p <- dim(Mu)[2]
 
