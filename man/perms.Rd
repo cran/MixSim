@@ -10,20 +10,20 @@ perms(n)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{n}{ Number of elements }
+  \item{n}{ Number of elements. }
 }
 
 \value{
   {Returns a matrix containing all possible permutations.}
 }
 
-\author{ Melnykov, V., Chen, W.-C., Maitra, R.}
+\author{ Volodymyr Melnykov, Wei-Chen Chen, and Ranjan Maitra. }
 
-\seealso{ ClassProp }
+\seealso{ \code{ClassProp}. }
 \examples{
-\dontrun{
+%\dontrun{
 perms(3)
-}
+%}
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

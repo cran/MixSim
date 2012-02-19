@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Dataset Simulation }
 \description{
-  Simulates a datasets of sample size n given parameters of finite mixture model with Gaussian components
+  Simulates a datasets of sample size n given parameters of finite mixture model with Gaussian components.
 }
 \usage{
 simdataset(n, Pi, Mu, S, n.noise = 0, n.out = 0, alpha = 0.001,
@@ -11,33 +11,37 @@ simdataset(n, Pi, Mu, S, n.noise = 0, n.out = 0, alpha = 0.001,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{n}{ sample size }
-  \item{Pi}{ vector of mixing proprtions (length K) }
-  \item{Mu}{ matrix consisting of components' mean vectors (K x p) }
-  \item{S}{ set of components' covariance matrices (p x p x K) }
-  \item{n.noise}{ number of noise variables }
-  \item{n.out}{ number of outlying observations }
-  \item{alpha}{ level for simulating outliers }
-  \item{max.out}{ maximum number of trials to simulate outliers }
-  \item{int}{ interval for noise and outlier generation }
-  \item{lambda}{ inverse Box-Cox transformation coefficients }
+  \item{n}{ sample size. }
+  \item{Pi}{ vector of mixing proprtions (length K). }
+  \item{Mu}{ matrix consisting of components' mean vectors (K * p). }
+  \item{S}{ set of components' covariance matrices (p * p * K). }
+  \item{n.noise}{ number of noise variables. }
+  \item{n.out}{ number of outlying observations. }
+  \item{alpha}{ level for simulating outliers. }
+  \item{max.out}{ maximum number of trials to simulate outliers. }
+  \item{int}{ interval for noise and outlier generation. }
+  \item{lambda}{ inverse Box-Cox transformation coefficients. }
 }
 \details{
    The function simulates a dataset of n observations from a mixture model with parameters 'Pi' (mixing proportions), 'Mu' (mean vectors), and 'S' (covariance matrices). Mixture component sample sizes are produced as a realization from a multinomial distribution with probabilities given by mixing proportions.
-   To make a dataset more challenging for clustering, a user might want to simulate noise variables or outliers. Parameter 'n.noise' specifies the desired number of noise variables. If an interval 'int' is specified, noise will be simulated from a Uniform distribution on the interval given by 'int'. Otherwise, noise will be simulated uniformly between the smallest and largest coordinates of mean vectors. 'n.out' specifies the number of obervations outside (1 - 'alpha') elipsoidal contours for all mixture components. Outliers are simulated on a hypercube specified by the interval 'int'.
+   To make a dataset more challenging for clustering, a user might want to simulate noise variables or outliers. Parameter 'n.noise' specifies the desired number of noise variables. If an interval 'int' is specified, noise will be simulated from a Uniform distribution on the interval given by 'int'. Otherwise, noise will be simulated uniformly between the smallest and largest coordinates of mean vectors. 'n.out' specifies the number of obervations outside (1 - 'alpha') elipsoidal contours for the weighted component distributions. Outliers are simulated on a hypercube specified by the interval 'int'.
    A user can apply an inverse Box-Cox transformation providing a vector of coefficients 'lambda'. The value 1 implies that no transformation is needed for the corresponding coordinate.
 }
 \value{
-  \item{X }{ simulated dataset (n + n.out) x (p + n.noise); noise coordiantes are provided in the last n.noise columns}
-  \item{id }{ classification vector (length n + n.out); 0 represents an outlier}
+  \item{X }{ simulated dataset (n + n.out) x (p + n.noise); noise coordiantes are provided in the last n.noise columns.}
+  \item{id }{ classification vector (length n + n.out); 0 represents an outlier.}
 }
 \references{
-Maitra, R. and Melnykov, V. (2010) "Simulating data to study performance of finite mixture modeling and clustering algorithms", The Journal of Computational and Graphical Statistics, 2:19, 354-376.
+Maitra, R. and Melnykov, V. (2010) ``Simulating data to study performance of finite mixture modeling and clustering algorithms'', The Journal of Computational and Graphical Statistics, 2:19, 354-376.
 
+Melnykov, V., Chen, W.-C., and Maitra, R. (2012)
+``MixSim: An R Package for Simulating Data to Study Performance of
+Finite Mixture Modeling and Clustering Algorithms'',
+Journal of Statistical Software, (submitted).
 }
-\author{ Melnykov, V., Chen, W.-C., Maitra, R.}
+\author{ Volodymyr Melnykov, Wei-Chen Chen, and Ranjan Maitra. }
 
-\seealso{ MixSim, overlap, pdplot }
+\seealso{ \code{MixSim}, \code{overlap}, and \code{pdplot}. }
 \examples{
 \dontrun{
 set.seed(1234)

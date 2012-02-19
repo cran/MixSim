@@ -75,7 +75,12 @@ MixSim <- function(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FA
         if (method != -1){
 
 		if (Q$fail == 0){
-		       	return(list(Pi = Q$Pi, Mu = matrix(Q$Mu1, byrow = TRUE, ncol = p), S = array(Q$S1, c(p, p, K)), OmegaMap = matrix(Q$OmegaMap1, byrow = TRUE, ncol = K), BarOmega = Q$BarOmega, MaxOmega = Q$MaxOmega, rcMax = Q$rcMax + 1, fail = Q$fail))
+			# return(list(Pi = Q$Pi, Mu = matrix(Q$Mu1, byrow = TRUE, ncol = p), S = array(Q$S1, c(p, p, K)), OmegaMap = matrix(Q$OmegaMap1, byrow = TRUE, ncol = K), BarOmega = Q$BarOmega, MaxOmega = Q$MaxOmega, rcMax = Q$rcMax + 1, fail = Q$fail))
+
+			### Modify for revision.
+			ret <- list(Pi = Q$Pi, Mu = matrix(Q$Mu1, byrow = TRUE, ncol = p), S = array(Q$S1, c(p, p, K)), OmegaMap = matrix(Q$OmegaMap1, byrow = TRUE, ncol = K), BarOmega = Q$BarOmega, MaxOmega = Q$MaxOmega, rcMax = Q$rcMax + 1, fail = Q$fail)
+			class(ret) <- "MixSim"
+			return(ret)
 		}
 
 	} else {
@@ -84,8 +89,37 @@ MixSim <- function(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FA
 		
 }
 
+### Add for revision.
+print.MixSim <- function(x, ...){
+        K <- length(x$Pi)
+        p <- ncol(x$Mu)
+	cat("K = ", K,
+	    ", p = ", p,
+            ", BarOmega = ", x$BarOmega,
+            ", MaxOmega = ", x$MaxOmega,
+            ", success = ", ifelse(x$fail == 0, "TRUE", "FALSE"),
+            ".\n", sep = "")
+        cat("\nPi: \n")
+        print(x$Pi)
+        cat("\nMu: \n")
+        Mu <- x$Mu
+        colnames(Mu) <- paste("p.", 1:p, sep = "")
+        rownames(Mu) <- paste("K.", 1:K, sep = "")
+        print(Mu)
+        cat("\nS: ... too long and skipped. Use operator $ to access.\n")
+	invisible()
+} # End of print.MixSim().
 
-
+summary.MixSim <- function(object, ...){
+        K <- length(object$Pi)
+        OmegaMap <- object$OmegaMap
+        colnames(OmegaMap) <- paste("k.", 1:K, sep = "")
+        rownames(OmegaMap) <- paste("k.", 1:K, sep = "")
+	cat("OmegaMap: \n")
+        print(OmegaMap)
+	cat("\nrcMax:", object$rcMax, "\n")
+	invisible()
+} # End of summary.MixSim().
 
 
 

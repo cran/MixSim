@@ -1,8 +1,0 @@
-libAdjRand.c	MixSim	libAdjRand.c
-libCEigen.c	MixSim	libCEigen.c
-libEVD.c	MixSim	libEVD.c
-libGenPars.c	MixSim	libGenPars.c
-libMatrix.c	MixSim	libMatrix.c
-libMixSim.c	MixSim	libMixSim.c
-libOverlap.c	MixSim	livOverlap.c
-libQF.c		MixSim	libQF.c

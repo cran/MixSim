@@ -842,8 +842,14 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 		sch = sch + 1;
 
 		if (sch == resN){
+			// WCC: R don't like printf(...).
+#ifndef __HAVE_R_
 			printf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
 			printf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
+#else
+			Rprintf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
+			Rprintf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
+#endif
 			(*fail) = 1;
 			break;
 		}
@@ -920,8 +926,13 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 	if ((Malpha < Balpha) | (Malpha > Balpha * K * (K - 1) / 2.0)){ /* wrong parameters*/
 
+#ifndef __HAVE_R_
 		printf("Error: incorrect values of average and maximum overlaps...\n");
 		printf("Both conditions should hold:\n1. MaxOverlap > AverOverlap\n2. MaxOverlap < AverOverlap * K (K - 1) / 2\n");
+#else
+		Rprintf("Error: incorrect values of average and maximum overlaps...\n");
+		Rprintf("Both conditions should hold:\n1. MaxOverlap > AverOverlap\n2. MaxOverlap < AverOverlap * K (K - 1) / 2\n");
+#endif
 
 	} else {
 
@@ -1044,8 +1055,13 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 			sch = sch + 1;
 
 			if (sch == resN){
+#ifndef __HAVE_R_
 				printf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
 				printf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
+#else
+				Rprintf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
+				Rprintf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
+#endif
 				(*fail) = 1;
 				break;
 			}

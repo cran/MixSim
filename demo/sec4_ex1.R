@@ -10,27 +10,29 @@ n.files <- 100
 omega <- c(0.4, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.01, 0.005, 0.001)
 
 set.seed(1234)
+
+AR.Mclust <- rep(NA, n.files)
+AR.Kmeans <- rep(NA, n.files)
+AR.PAM <- rep(NA, n.files)
+AR.Ward <- rep(NA, n.files)
+	
+P.Mclust <- rep(NA, n.files)
+P.Kmeans <- rep(NA, n.files)
+P.PAM <- rep(NA, n.files)
+P.Ward <- rep(NA, n.files)
+	
+VI.Mclust <- rep(NA, n.files)
+VI.Kmeans <- rep(NA, n.files)
+VI.PAM <- rep(NA, n.files)
+VI.Ward <- rep(NA, n.files)
+
 for (bo in omega){
 	
-	AR.Mclust <- rep(NA, n.files)
-	AR.Kmeans <- rep(NA, n.files)
-	AR.PAM <- rep(NA, n.files)
-	AR.Ward <- rep(NA, n.files)
-	
-	P.Mclust <- rep(NA, n.files)
-	P.Kmeans <- rep(NA, n.files)
-	P.PAM <- rep(NA, n.files)
-	P.Ward <- rep(NA, n.files)
-	
-	VI.Mclust <- rep(NA, n.files)
-	VI.Kmeans <- rep(NA, n.files)
-	VI.PAM <- rep(NA, n.files)
-	VI.Ward <- rep(NA, n.files)
-
 	for (i in 1:n.files){
 
 		Q <- MixSim(BarOmega = bo, K = K, p = p)
 		A <- simdataset(n = n, Pi = Q$Pi, Mu = Q$Mu, S = Q$S)
+
 		id.Mclust <- try(Mclust(A$X, G = K, model = "VVV")$class)
 		if (inherits(id.Mclust, what = "try-error") || (is.null(id.Mclust)))
 			id.Mclust <- rep(1, n)
