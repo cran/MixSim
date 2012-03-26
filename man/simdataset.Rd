@@ -12,7 +12,7 @@ simdataset(n, Pi, Mu, S, n.noise = 0, n.out = 0, alpha = 0.001,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{n}{ sample size. }
-  \item{Pi}{ vector of mixing proprtions (length K). }
+  \item{Pi}{ vector of mixing proportions (length K). }
   \item{Mu}{ matrix consisting of components' mean vectors (K * p). }
   \item{S}{ set of components' covariance matrices (p * p * K). }
   \item{n.noise}{ number of noise variables. }
@@ -24,11 +24,11 @@ simdataset(n, Pi, Mu, S, n.noise = 0, n.out = 0, alpha = 0.001,
 }
 \details{
    The function simulates a dataset of n observations from a mixture model with parameters 'Pi' (mixing proportions), 'Mu' (mean vectors), and 'S' (covariance matrices). Mixture component sample sizes are produced as a realization from a multinomial distribution with probabilities given by mixing proportions.
-   To make a dataset more challenging for clustering, a user might want to simulate noise variables or outliers. Parameter 'n.noise' specifies the desired number of noise variables. If an interval 'int' is specified, noise will be simulated from a Uniform distribution on the interval given by 'int'. Otherwise, noise will be simulated uniformly between the smallest and largest coordinates of mean vectors. 'n.out' specifies the number of obervations outside (1 - 'alpha') elipsoidal contours for the weighted component distributions. Outliers are simulated on a hypercube specified by the interval 'int'.
+   To make a dataset more challenging for clustering, a user might want to simulate noise variables or outliers. Parameter 'n.noise' specifies the desired number of noise variables. If an interval 'int' is specified, noise will be simulated from a Uniform distribution on the interval given by 'int'. Otherwise, noise will be simulated uniformly between the smallest and largest coordinates of mean vectors. 'n.out' specifies the number of observations outside (1 - 'alpha') ellipsoidal contours for the weighted component distributions. Outliers are simulated on a hypercube specified by the interval 'int'.
    A user can apply an inverse Box-Cox transformation providing a vector of coefficients 'lambda'. The value 1 implies that no transformation is needed for the corresponding coordinate.
 }
 \value{
-  \item{X }{ simulated dataset (n + n.out) x (p + n.noise); noise coordiantes are provided in the last n.noise columns.}
+  \item{X }{ simulated dataset (n + n.out) x (p + n.noise); noise coordinates are provided in the last n.noise columns.}
   \item{id }{ classification vector (length n + n.out); 0 represents an outlier.}
 }
 \references{

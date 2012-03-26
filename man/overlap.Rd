@@ -19,8 +19,8 @@ overlap(Pi, Mu, S, eps = 1e-06, lim = 1e06)
 
 \value{
   \item{OmegaMap}{matrix of misclassification probabilities (K * K); OmegaMap[i,j] is the probability that X coming from the i-th component is classified to the j-th component.}
-  \item{BarOmega}{value of average overap.}
-  \item{MaxOmega}{value of maximum overap.}
+  \item{BarOmega}{value of average overlap.}
+  \item{MaxOmega}{value of maximum overlap.}
   \item{rcMax}{row and column numbers for the pair of components producing maximum overlap 'MaxOmega'.}
 }
 \references{
@@ -38,13 +38,13 @@ Davies, R. (1980) ``The distribution of a linear combination of chi-square rando
 \seealso{ \code{MixSim}, \code{pdplot}, and \code{simdataset}. }
 \examples{
 %\dontrun{
-data(iris)
-p <- dim(iris)[2] - 1
-K <- 3
-id <- as.numeric(iris[, 5])
+data("iris", package = "datasets")
+p <- ncol(iris) - 1
+id <- as.integer(iris[, 5])
+K <- max(id)
 
 # estimate mixture parameters
-Pi <- sapply(1:K, function(k){ sum(id == k) }) / dim(iris)[1]
+Pi <- prop.table(tabulate(id))
 Mu <- t(sapply(1:K, function(k){ colMeans(iris[id == k, -5]) }))
 S <- sapply(1:K, function(k){ var(iris[id == k, -5]) })
 dim(S) <- c(p, p, K)

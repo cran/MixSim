@@ -16,7 +16,7 @@ MixSim(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FALSE,
   \item{MaxOmega}{ value of desired maximum overlap. }
   \item{K}{ number of components. }
   \item{p}{ number of dimensions. }
-  \item{sph}{ covariance matrix structure (FALSE - nonspherical, TRUE - spherical). }
+  \item{sph}{ covariance matrix structure (FALSE - non-spherical, TRUE - spherical). }
   \item{hom}{ heterogeneous or homogeneous clusters (FALSE - heterogeneous, TRUE - homogeneous). }
   \item{ecc}{ maximum eccentricity. }
   \item{PiLow}{ value of the smallest mixing proportion (if 'PiLow' is not reachable with respect to K, equal proportions are taken; PiLow = 1.0 implies equal proportions by default). }
@@ -29,12 +29,12 @@ MixSim(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FALSE,
   If 'BarOmega' is not specified, the function generates a mixture solely based on 'MaxOmega'; if 'MaxOmega' is not specified, the function generates a mixture solely based on 'BarOmega'.
 }
 \value{
-  \item{Pi }{vector of mixing proprtions. }
+  \item{Pi }{vector of mixing proportions. }
   \item{Mu }{matrix consisting of components' mean vectors (K * p). }
   \item{S }{set of components' covariance matrices (p * p * K). }
   \item{OmegaMap}{matrix of misclassification probabilities (K * K); OmegaMap[i,j] is the probability that X coming from the i-th component is classified to the j-th component. }
-  \item{BarOmega }{value of average overap. }
-  \item{MaxOmega }{value of maximum overap. }
+  \item{BarOmega }{value of average overlap. }
+  \item{MaxOmega }{value of maximum overlap. }
   \item{rcMax }{row and column numbers for the pair of components producing maximum overlap 'MaxOmega'. }
   \item{fail }{flag value; 0 represents successful mixture generation, 1 represents failure. }
 }
@@ -57,18 +57,15 @@ Davies, R. (1980) ``The distribution of a linear combination of chi-square rando
 set.seed(1234)
 
 # controls average and maximum overlaps
-ex.1 <- MixSim(BarOmega = 0.05, MaxOmega = 0.15, K = 4, p = 5)
-print(ex.1)
+(ex.1 <- MixSim(BarOmega = 0.05, MaxOmega = 0.15, K = 4, p = 5))
 summary(ex.1)
 
 # controls average overlap
-ex.2 <- MixSim(BarOmega = 0.05, K = 4, p = 5, hom = TRUE)
-print(ex.2)
+(ex.2 <- MixSim(BarOmega = 0.05, K = 4, p = 5, hom = TRUE))
 summary(ex.2)
 
 # controls maximum overlap
-ex.3 <- MixSim(MaxOmega = 0.15, K = 4, p = 5, sph = TRUE)
-print(ex.3)
+(ex.3 <- MixSim(MaxOmega = 0.15, K = 4, p = 5, sph = TRUE))
 summary(ex.3)
 %}
 }

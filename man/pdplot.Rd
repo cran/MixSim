@@ -10,7 +10,7 @@ pdplot(Pi, Mu, S, file = NULL, Nx = 5, Ny = 5, MaxInt = 1, marg = c(2,1,1,1))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{Pi}{ vector of mixing proprtions. }
+  \item{Pi}{ vector of mixing proportions. }
   \item{Mu}{ matrix consisting of components' mean vectors (K * p). }
   \item{S}{ set of components' covariance matrices (p * p * K). }
   \item{file}{ name of .pdf-file. }
@@ -36,13 +36,13 @@ Journal of Statistical Software, (submitted).
 \seealso{ \code{MixSim}, \code{overlap}, and \code{simdataset}. }
 \examples{
 %\dontrun{
-data(iris)
-p <- dim(iris)[2] - 1
-K <- 3
-id <- as.numeric(iris[, 5])
+data("iris", package = "datasets")
+p <- ncol(iris) - 1
+id <- as.integer(iris[, 5])
+K <- max(id)
 
 # estimate mixture parameters
-Pi <- sapply(1:K, function(k){ sum(id == k) }) / dim(iris)[1]
+Pi <- prop.table(tabulate(id))
 Mu <- t(sapply(1:K, function(k){ colMeans(iris[id == k, -5]) }))
 S <- sapply(1:K, function(k){ var(iris[id == k, -5]) })
 dim(S) <- c(p, p, K)
