@@ -26,10 +26,7 @@ If 'file' is specified, produced plot will be saved as a .pdf-file.
 \references{
 Maitra, R. and Melnykov, V. (2010) ``Simulating data to study performance of finite mixture modeling and clustering algorithms'', The Journal of Computational and Graphical Statistics, 2:19, 354-376.
 
-Melnykov, V., Chen, W.-C., and Maitra, R. (2012)
-``MixSim: An R Package for Simulating Data to Study Performance of
-Finite Mixture Modeling and Clustering Algorithms'',
-Journal of Statistical Software, (submitted).
+Melnykov, V., Chen, W.-C., and Maitra, R. (2012) ``MixSim: An R Package for Simulating Data to Study Performance of Clustering Algorithms'', Journal of Statistical Software, (accepted).
 }
 \author{ Volodymyr Melnykov, Wei-Chen Chen, and Ranjan Maitra. }
 

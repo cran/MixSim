@@ -27,10 +27,7 @@ Maitra, R. and Melnykov, V. (2010) ``Simulating data to study performance of fin
 
 Meila, M. (2006) ``Comparing clusterings - an information based distance'', Journal of Multivariate Analysis, 98, 873-895.
 
-Melnykov, V., Chen, W.-C., and Maitra, R. (2012)
-``MixSim: An R Package for Simulating Data to Study Performance of
-Finite Mixture Modeling and Clustering Algorithms'',
-Journal of Statistical Software, (submitted).
+Melnykov, V., Chen, W.-C., and Maitra, R. (2012) ``MixSim: An R Package for Simulating Data to Study Performance of Clustering Algorithms'', Journal of Statistical Software, (accepted).
 }
 \author{ Volodymyr Melnykov, Wei-Chen Chen, and Ranjan Maitra. }
 \seealso{ \code{MixSim}, \code{pdplot}, \code{simdataset}, \code{ClassProp},
