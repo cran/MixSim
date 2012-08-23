@@ -176,7 +176,7 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 
 	int i, j, k, hom;
 	double Cnst1, t, s, TotalOmega, OmegaOverlap;
-	double eps, acc, sigma;
+	double acc, sigma;
 	
 	double *Li, *Di, *ncp, *coef, *ldprod, *const2;
 	double *trace;
@@ -193,8 +193,6 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 
 	MAKE_VECTOR(trace, 7);
 
-	
-	eps = pars[0];
 	acc = pars[1];
 
 	TotalOmega = 0.0;
@@ -665,11 +663,10 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
 
 void FindC(double lower, double upper, double Omega, int method, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double (*c), double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
 
-	double diff, eps, acc;
+	double diff, eps;
 	int sch, asympt, stopIter;
 
 	eps = pars[0];
-	acc = pars[1];
 
 	diff = Inf;
 	stopIter = 1000;
@@ -747,7 +744,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 	double (*MaxOmega), int *rcMax, int (*fail)){
 
 	int asympt, sch;
-	double c, diff, lower, upper, eps, acc, Balpha, Malpha;
+	double c, diff, lower, upper, eps, Balpha, Malpha;
 
 	int *fix;
 	double **const1;
@@ -763,7 +760,6 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 	anulli(fix, K);
 
 	eps = pars[0];
-	acc = pars[1];
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
@@ -895,8 +891,8 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 	double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail)){
 
 
-	int i, j, k, asympt, sch, rowN, colN, method;
-	double c, diff, lower = 0, upper = 0, eps, acc, Balpha, Malpha;
+	int i, j, k, asympt, sch, method;
+	double c, diff, lower = 0, upper = 0, eps, Balpha, Malpha;
 
 	int *fix, *fix2;
 	double **const1, **const12, **OmegaMap2;
@@ -917,7 +913,6 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 	anulli(fix2, 2);
 
 	eps = pars[0];
-	acc = pars[1];
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
@@ -973,9 +968,6 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 					/* find C for two currently largest clusters */
 					
-					rowN = rcMax[0];
-					colN = rcMax[1];
-
 					for (i=0; i<2; i++){
 						for (j=0; j<2; j++){
 							for (k=0; k<p; k++){

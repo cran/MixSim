@@ -1,10 +1,10 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-06a9bd2734b53ceb9321e4af3e02cb1e *ChangeLog
-9417e8fbe79d61f38a8cf68257f8c659 *DESCRIPTION
+0120cc7210929f48fa445da60855f46b *ChangeLog
+8cf8890324b60dba795745f98e206529 *DESCRIPTION
 00dd7342658b48b3b83f2b32bd6b1194 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
-5fae5c0cfef17326f44c6fa5c6c4c4fa *R/main.R
+7f8920520e45aa15c20bd8c8256baff9 *R/main.R
 3d4f6cfdb0b44beeec4d3f7967cb92c5 *R/zzz.R
 ed32045897ca3982971c3bd43c39e9dc *demo/00Index
 b36d74e41c48710c516340031c5d447a *demo/demoMixSim.R
@@ -44,6 +44,6 @@ d1efe0fff784fe7b44df3a896e6f136e *src/libEVD_LAPACK.c
 f5ba72d345e51a8861c47e3715fb8219 *src/libGenPars.c
 99883658c96b55b3c96d2a1b7fd93f67 *src/libMatrix.c
 bf486ff053e2631828bd1ef2a603aaab *src/libMixSim.c
-6e27990926cbe04238783fa3625e747b *src/libOverlap.c
+a6e2b7b203384c197e41c229e800a1f8 *src/libOverlap.c
 e631ce046d167a42fd33a6ec379939ea *src/libQF.c
 b25b82d611575f1c95d710acc530fb5b *src/overlap.h

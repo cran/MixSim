@@ -15,7 +15,7 @@ overlap <- function(Pi, Mu, S, eps = 1e-06, lim = 1e06){
         rcMax <- c(0, 0)
         
 
-	Q <- .C("runExactOverlap", p1 = as.integer(p), K1 = as.integer(K), Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(1), MaxOmega = as.double(1), rcMax = as.integer(rcMax), PACKAGE = MixSim)
+	Q <- .C("runExactOverlap", p1 = as.integer(p), K1 = as.integer(K), Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(1), MaxOmega = as.double(1), rcMax = as.integer(rcMax), PACKAGE = "MixSim")
 
         return(list(OmegaMap = matrix(Q$OmegaMap1, byrow = TRUE, ncol = K), BarOmega = Q$BarOmega, MaxOmega = Q$MaxOmega, rcMax = Q$rcMax + 1))
 
@@ -60,7 +60,7 @@ MixSim <- function(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FA
         if ((method == 0) | (method == 1)){
         
      
-              Q <- .C("runOmegaClust", Omega1 = as.double(Omega), method1 = as.integer(method), p1 = as.integer(p), K1 = as.integer(K), PiLow1 = as.double(PiLow), Lbound1 = as.double(Lbound), Ubound1 = as.double(Ubound), emax1 = as.double(ecc), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), resN1 = as.integer(resN), sph1 = as.integer(sph), hom1 = as.integer(hom),Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(1), MaxOmega = as.double(1), rcMax = as.integer(rcMax), fail = as.integer(1), PACKAGE = MixSim)
+              Q <- .C("runOmegaClust", Omega1 = as.double(Omega), method1 = as.integer(method), p1 = as.integer(p), K1 = as.integer(K), PiLow1 = as.double(PiLow), Lbound1 = as.double(Lbound), Ubound1 = as.double(Ubound), emax1 = as.double(ecc), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), resN1 = as.integer(resN), sph1 = as.integer(sph), hom1 = as.integer(hom),Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(1), MaxOmega = as.double(1), rcMax = as.integer(rcMax), fail = as.integer(1), PACKAGE = "MixSim")
 
 
         }
@@ -68,7 +68,7 @@ MixSim <- function(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FA
         if (method == 2){
               
 
-              Q <- .C("runOmegaBarOmegaMax", p1 = as.integer(p), K1 = as.integer(K), PiLow1 = as.double(PiLow), Lbound1 = as.double(Lbound), Ubound1 = as.double(Ubound), emax1 = as.double(ecc), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), resN1 = as.integer(resN), sph1 = as.integer(sph), Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(BarOmega), MaxOmega = as.double(MaxOmega), rcMax = as.integer(rcMax), fail = as.integer(1), PACKAGE = MixSim)
+              Q <- .C("runOmegaBarOmegaMax", p1 = as.integer(p), K1 = as.integer(K), PiLow1 = as.double(PiLow), Lbound1 = as.double(Lbound), Ubound1 = as.double(Ubound), emax1 = as.double(ecc), pars = as.double(c(eps, eps)), lim1 = as.integer(lim), resN1 = as.integer(resN), sph1 = as.integer(sph), Pi = as.double(Pi), Mu1 = as.double(Mu1), S1 = as.double(S1), OmegaMap1 = as.double(OmegaMap1), BarOmega = as.double(BarOmega), MaxOmega = as.double(MaxOmega), rcMax = as.integer(rcMax), fail = as.integer(1), PACKAGE = "MixSim")
 
         }
 
@@ -146,7 +146,7 @@ RandIndex <- function(id1, id2){
 	}
 
 
-	Q <- .C("runAdjRand", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), Rand = as.double(0), aRand = as.double(0), F = as.double(0), PACKAGE = MixSim)
+	Q <- .C("runAdjRand", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), Rand = as.double(0), aRand = as.double(0), F = as.double(0), PACKAGE = "MixSim")
 
        	return(list(R = Q$Rand, AR = Q$aRand, F = Q$F, M = n * (n - 1) * (1 - Q$Rand)))
 
@@ -179,7 +179,7 @@ ClassProp <- function(id1, id2){
 
 	if (min(K1, K2) == 1) return(max(table(id1, id2)))
 
-	Q <- .C("runProAgree", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), maxPro = as.double(0), PACKAGE = MixSim)
+	Q <- .C("runProAgree", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), maxPro = as.double(0), PACKAGE = "MixSim")
 
        	return(Q$maxPro)
 
@@ -211,7 +211,7 @@ VarInf <- function(id1, id2){
 	}
 
 
-	Q <- .C("runVarInf", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), VI = as.double(0), PACKAGE = MixSim)
+	Q <- .C("runVarInf", n = as.integer(n), K1 = as.integer(K1), K2 = as.integer(K2), id1 = as.integer(id1), id2 = as.integer(id2), VI = as.double(0), PACKAGE = "MixSim")
 
        	return(Q$VI)
 
@@ -230,7 +230,7 @@ perms <- function(n){
 	permN <- factorial(n)
 	perms1 <- rep(0, n * permN)
 
-	Q <- .C("runPerms", n1 = as.integer(n), permN1 = as.integer(permN), perms = as.integer(perms1), PACKAGE = MixSim)
+	Q <- .C("runPerms", n1 = as.integer(n), permN1 = as.integer(permN), perms = as.integer(perms1), PACKAGE = "MixSim")
 
        	return(matrix(Q$perms, ncol = n, byrow = T) + 1)
 

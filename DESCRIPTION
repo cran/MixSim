@@ -1,6 +1,6 @@
 Package: MixSim
-Version: 1.0-5
-Date: 2012-08-12
+Version: 1.0-7
+Date: 2012-08-23
 Title: Simulating Data to Study Performance of Clustering Algorithms
 Author: Volodymyr Melnykov, Wei-Chen Chen, and Ranjan Maitra
 Maintainer: Volodymyr Melnykov <vmelnykov@cba.ua.edu>
@@ -23,6 +23,6 @@ Description: MixSim allows simulating mixtures of Gaussian
         distribution plots for the graphical display of finite mixture
         models.
 License: GPL (>= 2)
-Packaged: 2012-08-16 04:44:30 UTC; root
+Packaged: 2012-08-23 14:02:09 UTC; root
 Repository: CRAN
-Date/Publication: 2012-08-16 10:21:01
+Date/Publication: 2012-08-23 14:42:39
