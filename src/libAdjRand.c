@@ -231,22 +231,28 @@ void proAgree(int n, int K1, int K2, int *id1, int *id2, double *maxPro){
 
 		if ((j == (size-1)) & (flag == 0)){
 			i = i - 1;
-			j = cn[sch-1];
+			
 			sch = sch - 1;
 
-			for (v=0; v<size; v++){
-				for (w=0; w<size; w++){
-					pat[v][w] = 0;
-				}
-			}
+			if (sch >= 0){
 
-			if (sch > 0){
-				for (v=0; v<sch; v++){
+				j = cn[sch];
+
+				for (v=0; v<size; v++){
 					for (w=0; w<size; w++){
-						pat[v][w] = 1;
-						pat[w][cn[v]] = 1;
+						pat[v][w] = 0;
 					}
-				}    
+				}
+
+				if (sch > 0){
+					for (v=0; v<sch; v++){
+						for (w=0; w<size; w++){
+							pat[v][w] = 1;
+							pat[w][cn[v]] = 1;
+						}
+					}    
+				}
+
 			}
 
 			if (i >= 0){
