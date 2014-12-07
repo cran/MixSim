@@ -1,18 +1,20 @@
 \name{print.object}
 \alias{print.MixSim}
 \alias{summary.MixSim}
+\alias{print.MixGOM}
 \title{Functions for Printing or Summarizing Objects}
 \description{
-  A \code{MixSim} class is declared, and these are functions
-  to print and summary objects.
+  A \code{MixSim} and \code{MixGOM} classes are declared, and these are functions
+  to print and summarize objects.
 }
 \usage{
 \method{print}{MixSim}(x, ...)
 \method{summary}{MixSim}(object, ...)
+\method{print}{MixGOM}(x, ...)
 }
 \arguments{
-  \item{x}{an object with the 'MixSim' class attributes.}
-  \item{object}{an object with the 'MixSim' class attributes.}
+  \item{x}{an object with the 'MixSim' (or 'MixGOM') class attributes.}
+  \item{object}{an object with the 'MixSim' (or 'MixGOM') class attributes.}
   \item{\dots}{other possible options.}
 }
 \details{

@@ -591,6 +591,50 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
 }
 
 
+
+/* computes the measure of overlap based on the largest eigenvalue
+ * K  - number of components
+ * OmegaMap - map of misclassification probabilities 
+ */
+
+double GetEigOmega(int K, double **OmegaMap){
+	
+	int i, j;
+	double dtmt, eigOm;
+	double *Eig;
+	double **W2;
+
+	MAKE_VECTOR(Eig, K);
+	MAKE_MATRIX(W2, K, K);
+	
+	for (i=1; i<K; i++){
+		for (j=0; j<i; j++){
+			W2[i][j] = (OmegaMap[i][j] + OmegaMap[j][i]);
+			W2[j][i] = W2[i][j];
+		}
+	}
+
+	for (i=0; i<K; i++){
+		W2[i][i] = 1.0;
+	}
+
+	#ifdef __HAVE_R_
+		EigValDec(K, Eig, W2, &dtmt);
+	#else
+		cephes_symmeigens_down(K, Eig, W2, &dtmt);
+	#endif
+
+
+	eigOm = (Eig[K-1] - 1) / (K - 1);
+	
+	FREE_MATRIX(W2);
+	FREE_VECTOR(Eig);
+
+	return eigOm;
+	
+}
+
+
 /* computes the exact overlap
  * p  - dimensionality
  * K  - number of components
@@ -605,9 +649,9 @@ void GetOmegaMap(double c, int p, int K, double ***li, double ***di, double **co
  */
 
 void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim,
-	double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
+	double **OmegaMap, double (*BarOmega), double (*MaxOmega), double (*EigOmega), int *rcMax){
 
-	double c, Balpha, Malpha;
+	double c, Balpha, Malpha, Ealpha;
 	int asympt;
 
 	int  *fix;
@@ -622,6 +666,7 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
+	Ealpha = (*EigOmega);
 
 	ComputePars(p, K, Pi, Mu, S, li, di, const1);
 
@@ -630,9 +675,11 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
 	c = 1.0;
 	asympt = 0;
 	GetOmegaMap(c, p, K, li, di, const1, fix, pars, lim, asympt, OmegaMap, &Balpha, &Malpha, rcMax);
-
+	Ealpha = GetEigOmega(K, OmegaMap);
+	
 	(*BarOmega) = Balpha;
 	(*MaxOmega) = Malpha;
+	(*EigOmega) = Ealpha;
 
 	FREE_VECTOR(fix);
 
@@ -641,6 +688,7 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
 	FREE_MATRIX(const1);
 
 }
+
 
 
 /* FIND MULTIPLIER C ON THE INTERVAL (lower, upper)
@@ -657,11 +705,12 @@ void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pa
  * OmegaMap - map of misclassification probabilities
  * BarOmega - average overlap
  * MaxOmega - maximum overlap
+ * EigOmega - eigenvalue overlap
  * rcMax - contains the pair of components producing the highest overlap
  */
 
 
-void FindC(double lower, double upper, double Omega, int method, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double (*c), double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax){
+void FindC(double lower, double upper, double Omega, int method, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double (*c), double **OmegaMap, double (*BarOmega), double (*MaxOmega), double (*EigOmega), int *rcMax){
 
 	double diff, eps;
 	int sch, asympt, stopIter;
@@ -691,15 +740,31 @@ void FindC(double lower, double upper, double Omega, int method, int p, int K, d
 			diff = (*BarOmega) - Omega;
 
 		} else {
+				
+			if (method == 1){
 
-			if ((*MaxOmega) < Omega){ /* clusters are too far */
-				lower = (*c);
+				if ((*MaxOmega) < Omega){ /* clusters are too far */
+					lower = (*c);
+				} else {
+					upper = (*c);
+				}
+			
+				diff = (*MaxOmega) - Omega;			
+
 			} else {
-				upper = (*c);
+
+				(*EigOmega) = GetEigOmega(K, OmegaMap);
+
+				if ((*EigOmega) < Omega){ /* clusters are too far */
+					lower = (*c);
+				} else {
+					upper = (*c);
+				}
+			
+				diff = (*EigOmega) - Omega;				
+			
 			}
 			
-			diff = (*MaxOmega) - Omega;			
-
 		}
 
 		sch = sch + 1;
@@ -711,9 +776,69 @@ void FindC(double lower, double upper, double Omega, int method, int p, int K, d
 		}
 
 	}
+	
+	if ((method == 0) | (method == 1)) (*EigOmega) = GetEigOmega(K, OmegaMap);
 
 }
 
+
+/* FIND MULTIPLIER C ON THE INTERVAL (lower, upper)
+ * lower - lower bound of the interval
+ * upper - upper bound of the interval
+ * Omega - overlap value
+ * method - average or maximum overlap
+ * p  - dimensionality
+ * K  - number of components
+ * li, di, const1 - parameters needed for computing overlap (see theory of method)
+ * fix - fixed clusters that do not participate in inflation/deflation
+ * pars, lim - parameters for qfc function
+ * c  - inflation parameter
+ * OmegaMap - map of misclassification probabilities
+ * EigOmega - average overlap
+ * rcMax - contains the pair of components producing the highest overlap
+ */
+
+/*
+void FindCeig(double lower, double upper, double Omega, int method, int p, int K, double ***li, double ***di, double **const1, int *fix, double *pars, int lim, double (*c), double **OmegaMap, double (*BarOmega), double (*MaxOmega), double (*EigOmega), int *rcMax){
+
+	double diff, eps;
+	int sch, asympt, stopIter;
+
+	eps = pars[0];
+
+	diff = Inf;
+	stopIter = 1000;
+
+	sch = 0;
+
+	while (fabs(diff) > eps){
+
+		(*c) = (lower + upper) / 2.0;
+
+		asympt = 0;
+		GetOmegaMap((*c), p, K, li, di, const1, fix, pars, lim, asympt, OmegaMap, &(*BarOmega), &(*MaxOmega), rcMax);
+	
+		(*EigOmega) = GetEigOmega(K, OmegaMap);
+
+		if ((*EigOmega) < Omega){ // clusters are too far
+			lower = (*c);
+		} else {
+			upper = (*c);
+		}
+			
+		diff = (*EigOmega) - Omega;				
+			
+		sch = sch + 1;
+
+		if (sch == stopIter){
+			(*c) = 0.0;
+			break;
+		}
+
+	}
+	
+}
+*/
 
 /* run the procedure when average or maximum overlap is specified
  * 
@@ -741,10 +866,10 @@ void FindC(double lower, double upper, double Omega, int method, int p, int K, d
 void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbound,
 	double Ubound,	double emax, double *pars, int lim, int resN, int sph, int hom,
 	double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega),
-	double (*MaxOmega), int *rcMax, int (*fail)){
+	double (*MaxOmega), double (*EigOmega), int *rcMax, int (*fail)){
 
 	int asympt, sch;
-	double c, diff, lower, upper, eps, Balpha, Malpha;
+	double c, diff, lower, upper, eps, Balpha, Malpha, Ealpha;
 
 	int *fix;
 	double **const1;
@@ -763,7 +888,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
-
+	Ealpha = (*EigOmega);
 
 	sch = 0;
 
@@ -793,11 +918,16 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 		asympt = 1;
 		c = 0.0;
 		GetOmegaMap(c, p, K, li, di, const1, fix, pars, lim, asympt, OmegaMap, &Balpha, &Malpha, rcMax);
+		Ealpha = GetEigOmega(K, OmegaMap);
 
 		if (method == 0){
 			diff = Balpha - Omega;
 		} else {
-			diff = Malpha - Omega;
+			if (method == 1){
+				diff = Malpha - Omega;
+			} else {
+				diff = Ealpha - Omega;
+			}
 		}
 
 		if (diff < -eps){ /* not reachable */
@@ -809,8 +939,8 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 			upper = pow(2.0, 2);
 
 			do{
-				FindC(lower, upper, Omega, method, p, K, li, di, const1, fix, pars, lim, &c, OmegaMap, &Balpha, &Malpha, rcMax);
-				
+				FindC(lower, upper, Omega, method, p, K, li, di, const1, fix, pars, lim, &c, OmegaMap, &Balpha, &Malpha, &Ealpha, rcMax);
+
 				lower = upper;
 				upper = upper * upper;
 				if (upper > 1000000){
@@ -838,7 +968,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 		sch = sch + 1;
 
 		if (sch == resN){
-			// WCC: R don't like printf(...).
+			// WCC: R doesn't like printf(...).
 #ifndef __HAVE_R_
 			printf("Error: the desired overlap has not been reached in %i simulations...\n", resN);
 			printf("Increase the number of simulations allowed (option resN) or change the value of overlap...\n");
@@ -854,6 +984,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 
 	(*BarOmega) = Balpha;
 	(*MaxOmega) = Malpha;
+	(*EigOmega) = Ealpha;
 
 	FREE_3ARRAY(li);
 	FREE_3ARRAY(di);
@@ -863,6 +994,7 @@ void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbo
 
 
 }
+
 
 
 
@@ -892,7 +1024,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 
 	int i, j, k, asympt, sch, method;
-	double c, diff, lower = 0, upper = 0, eps, Balpha, Malpha;
+	double c, diff, lower = 0, upper = 0, eps, Balpha, Malpha, Ealpha;
 
 	int *fix, *fix2;
 	double **const1, **const12, **OmegaMap2;
@@ -916,6 +1048,8 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 	Balpha = (*BarOmega);
 	Malpha = (*MaxOmega);
+	
+	Ealpha = GetEigOmega(K, OmegaMap);
 
 	(*fail) = 1;
 
@@ -980,7 +1114,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 					Malpha = (*MaxOmega);
 					method = 1;
-					FindC(lower, upper, Malpha, method, p, 2, li2, di2, const12, fix2, pars, lim, &c, OmegaMap2, &Balpha, &Malpha, rcMax);
+					FindC(lower, upper, Malpha, method, p, 2, li2, di2, const12, fix2, pars, lim, &c, OmegaMap2, &Balpha, &Malpha, &Ealpha, rcMax);
 
 					if (c == 0){ /* abnormal termination */
 /*						printf("Warning: the desired overlap cannot be reached...\n"); */
@@ -1025,7 +1159,7 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 				Balpha = (*BarOmega);
 				method = 0;
-				FindC(lower, upper, Balpha, method, p, K, li, di, const1, fix, pars, lim, &c, OmegaMap, &Balpha, &Malpha, rcMax);
+				FindC(lower, upper, Balpha, method, p, K, li, di, const1, fix, pars, lim, &c, OmegaMap, &Balpha, &Malpha, &Ealpha, rcMax);
 
 				/* correct covariances by multiplier C */
 
@@ -1078,3 +1212,4 @@ void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, 
 
 
 }
+

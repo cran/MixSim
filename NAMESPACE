@@ -1,4 +1,5 @@
-useDynLib(MixSim)
+# useDynLib(MixSim)
+import(MASS)
 
 export(MixSim)
 export(overlap)
@@ -7,10 +8,13 @@ export(simdataset)
 export(RandIndex)
 export(ClassProp)
 export(VarInf)
-export(perms) 
+export(perms)
+export(MixGOM)
+export(overlapGOM)
 export(print.MixSim) 
 export(summary.MixSim) 
+export(print.MixGOM) 
 
 S3method(print, MixSim)
 S3method(summary, MixSim)
-
+S3method(print, MixGOM)

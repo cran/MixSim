@@ -3,8 +3,8 @@
 #define OVERLAP_H
 
 int CMixSim(int p, int K, double BarOmega, double MaxOmega, int sph, int hom, double emax, double PiLow, double Lbound, double Ubound, int resN, double *pars, int lim, int g, int nf, int v, int w,	int o, char *Path, char *PIfname, char *MUfname, char *Sfname, char *overmap, char *overbarmax,	char *dataX, char *Nksizes, char *IDtrue, char *Lambda);
-void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax);
-void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbound, double Ubound, double emax, double *pars, int lim, int resN, int sph, int hom, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail));
+void ExactOverlap(int p, int K, double *Pi, double **Mu, double ***S, double *pars, int lim, double **OmegaMap, double (*BarOmega), double (*MaxOmega), double (*EigOmega), int *rcMax);
+void OmegaClust(double Omega, int method, int p, int K, double PiLow, double Lbound, double Ubound, double emax, double *pars, int lim, int resN, int sph, int hom, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), double (*EigOmega), int *rcMax, int (*fail));
 void OmegaBarOmegaMax(int p, int K, double PiLow, double Lbound, double Ubound, double emax, double *pars, int lim, int resN, int sph, double *Pi, double **Mu, double ***S, double **OmegaMap, double (*BarOmega), double (*MaxOmega), int *rcMax, int (*fail));
 void dsyev_(char *JOBZp, char *UPLOp,int *Np, double *A, int *LDAp, double *Wp, double *WORK, int *LWORK, int *INFOp);
 int vecMin(double *x, int p, double (*min));

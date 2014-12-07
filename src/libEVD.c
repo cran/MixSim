@@ -7,9 +7,6 @@
 #include "cephes_eigens.h"
 
 
-void cephes_symmeigens_down(int p, double *eval, double **A, 
-			    double (*determinant))
-
 /*
   input:
 
@@ -23,7 +20,11 @@ void cephes_symmeigens_down(int p, double *eval, double **A,
                 product of the eigenvalues
 
 */
-	
+
+void cephes_symmeigens_down(int p, double *eval, double **A, 
+			    double (*determinant))
+
+
 {
 	int i, j;
 	double *As, *Evec, *Evalues;
@@ -50,20 +51,6 @@ void cephes_symmeigens_down(int p, double *eval, double **A,
 	}
 	                        
 
-/*
- 	printf("EigenValues:\n");
-	for (i = 0; i < p; i++){
-		printf("EigVal: %lf \n", eval[i]);
-	}
- 	printf("EigenVectors:\n");
-	for (i = 0; i < p; i++) {
-		for (j = 0; j < p; j++){
-			printf("%lf ", A[i][j]);
-		}
-		printf("\n");
-	}
-*/
-	
 	(*determinant)=1.0;
 	
 	for (i = 0; i < p; i++) (*determinant)*=eval[i];
@@ -74,4 +61,5 @@ void cephes_symmeigens_down(int p, double *eval, double **A,
 
 	return;
 }
+
 

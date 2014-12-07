@@ -11,13 +11,13 @@
 
 void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
 	double *pars, int (*lim1), double *OmegaMap1, double (*BarOmega), double (*MaxOmega),
-	int *rcMax){
+	double (*EigOmega), int *rcMax){
 
 	double **Mu, **OmegaMap;
 	double ***S;
 
 	int p, K, lim;
-	double BarOmega1, MaxOmega1;
+	double BarOmega1, MaxOmega1, EigOmega1;
 
 
 	p = (*p1);
@@ -33,12 +33,13 @@ void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
 	array1to3(K, p, p, S1, S);
 
 
-	ExactOverlap(p, K, Pi, Mu, S, pars, lim, OmegaMap, &BarOmega1, &MaxOmega1, rcMax);
+	ExactOverlap(p, K, Pi, Mu, S, pars, lim, OmegaMap, &BarOmega1, &MaxOmega1, &EigOmega1, rcMax);
 
 
 	(*BarOmega) = BarOmega1;
 	(*MaxOmega) = MaxOmega1;
-
+	(*EigOmega) = EigOmega1;
+	
 	array2to1(K, K, OmegaMap1, OmegaMap);
 
 
@@ -54,14 +55,14 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1),
 	double (*PiLow1), double (*Lbound1), double (*Ubound1), double (*emax1),
 	double *pars, int (*lim1), int (*resN1), int (*sph1), int (*hom1),
 	double *Pi, double *Mu1, double *S1, double *OmegaMap1,	double (*BarOmega),
-	double (*MaxOmega), int *rcMax, int (*fail)){
+	double (*MaxOmega), double (*EigOmega), int *rcMax, int (*fail)){
 
 
 	double **Mu, **OmegaMap;
 	double ***S;
 
 	int fail1, p, K, lim, method, resN, sph, hom;
-	double BarOmega1, MaxOmega1, Omega, PiLow, Lbound, Ubound, emax;
+	double BarOmega1, MaxOmega1, EigOmega1, Omega, PiLow, Lbound, Ubound, emax;
 
 	GetRNGstate();
 
@@ -87,10 +88,11 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1),
 	emax = (*emax1);
 
 	OmegaClust(Omega, method, p, K, PiLow, Lbound, Ubound, emax, pars, lim, resN,
-		sph, hom, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, rcMax, &fail1);
+		sph, hom, Pi, Mu, S, OmegaMap, &BarOmega1, &MaxOmega1, &EigOmega1, rcMax, &fail1);
 
 	(*BarOmega) = BarOmega1;
 	(*MaxOmega) = MaxOmega1;
+	(*EigOmega) = EigOmega1;
 	(*fail) = fail1;
 
 	array2to1(K, p, Mu1, Mu);
