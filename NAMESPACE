@@ -1,6 +1,10 @@
 # useDynLib(MixSim)
 import(MASS)
 
+importFrom("grDevices", "dev.off", "pdf", "rgb")
+importFrom("graphics", "axis", "box", "lines", "par", "plot", "polygon")
+importFrom("stats", "dnorm", "qchisq", "qnorm", "rmultinom", "runif")
+
 export(MixSim)
 export(overlap)
 export(pdplot)

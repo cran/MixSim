@@ -1,13 +1,12 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-2388d9e8276cff2c2f82db321a2a6295 *ChangeLog
-c8f2bd56afe29c05b968bb967ecd37c3 *DESCRIPTION
-671a86eb53fd6e1089514e59f366a3c8 *NAMESPACE
-beb93d6a8161ab458d85283f68664829 *NEWS
+2ab39d024bd1076ac95cb79d19551b35 *ChangeLog
+352dd97dec1fa708e3f2031e8819cd3d *DESCRIPTION
+49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
 33afd366f950e67fe479b23bc33084cb *R/main.R
 7b3efb8a1da7c0e62860ceac04f81e79 *R/zzz.R
-d8ef1ce9a8e0fcf39a4a75f2b03019bb *cleanup
+14d85d36e209075f031a8d9568cb15a7 *cleanup
 ed32045897ca3982971c3bd43c39e9dc *demo/00Index
 b36d74e41c48710c516340031c5d447a *demo/demoMixSim.R
 ad4a6cee26fe82477ec22e38eb646ac0 *demo/sec3.1_ex1.R
@@ -42,7 +41,7 @@ bc8f9ec357ba199a97908559e6b66251 *man/pdplot.Rd
 d31d43abb4fac154089418383ee9da73 *src/Makevars
 2f7c5e80a9ba86296656ad4aa8bed025 *src/array.h
 8e9383adf3bf56f487a27112d6126cec *src/cephes_eigens.h
-693969a767dd3306e6203a3aa1362d24 *src/libAdjRand.c
+8aba93d06b1bb58aed5571f1bfffdb7a *src/libAdjRand.c
 5a048fe4257f65e66668544388f0964e *src/libCEigen.c
 85605791a6a3dd78e2e82b29ec01f525 *src/libEVD.c
 d1efe0fff784fe7b44df3a896e6f136e *src/libEVD_LAPACK.c
