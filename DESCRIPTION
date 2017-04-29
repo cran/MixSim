@@ -1,6 +1,6 @@
 Package: MixSim
-Version: 1.1-2
-Date: 2015-10-19
+Version: 1.1-3
+Date: 2017-04-22
 Title: Simulating Data to Study Performance of Clustering Algorithms
 Authors@R: c(person("Volodymyr", "Melnykov", role = "aut",
                     email = "vmelnykov@cba.ua.edu"),
@@ -35,7 +35,7 @@ Description: The utility of this package is in simulating mixtures of Gaussian
         models.
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2015-10-22 03:04:45 UTC; snoweye
+Packaged: 2017-04-22 19:48:36 UTC; snoweye
 Author: Volodymyr Melnykov [aut],
   Wei-Chen Chen [aut, cre],
   Ranjan Maitra [aut],
@@ -44,4 +44,4 @@ Author: Volodymyr Melnykov [aut],
   Rouben Rostamian [ctb] (memory allocation)
 Maintainer: Wei-Chen Chen <wccsnow@gmail.com>
 Repository: CRAN
-Date/Publication: 2015-10-22 15:23:14
+Date/Publication: 2017-04-29 17:05:22 UTC

@@ -1,6 +1,6 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
 2ab39d024bd1076ac95cb79d19551b35 *ChangeLog
-352dd97dec1fa708e3f2031e8819cd3d *DESCRIPTION
+e4ecfcf462c05b842ec10617f429ae0f *DESCRIPTION
 49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
@@ -51,3 +51,5 @@ f5ba72d345e51a8861c47e3715fb8219 *src/libGenPars.c
 3f39ee6b5968be03628ee6420c72b8e5 *src/libOverlap.c
 e631ce046d167a42fd33a6ec379939ea *src/libQF.c
 a37ce031ffdcbb0db1031fe31558f6a0 *src/overlap.h
+fe5ef8694cad807744ec4456e734bdba *src/zzz.c
+4827b95fdcbc3dc879bb25801a099454 *src/zzz.h
