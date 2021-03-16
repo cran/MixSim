@@ -19,6 +19,9 @@ void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
 	int p, K, lim;
 	double BarOmega1, MaxOmega1, EigOmega1;
 
+	int i;
+	double *tmp_OmegaMap, *tmp_1;
+
 
 	p = (*p1);
 	K = (*K1);
@@ -27,7 +30,14 @@ void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
 
 	MAKE_MATRIX(Mu, K, p);
 	MAKE_3ARRAY(S, K, p, p);
-	MAKE_MATRIX(OmegaMap, K, K);
+	//MAKE_MATRIX(OmegaMap, K, K);
+	tmp_OmegaMap = calloc(K * K, sizeof(double));
+	OmegaMap = (double**) calloc(K, sizeof(double*));
+	tmp_1 = tmp_OmegaMap;
+	for(i = 0; i < K; i++){
+		OmegaMap[i] = tmp_1;
+		tmp_1 = tmp_1 + K;
+	}
 
 	array1to2(K, p, Mu1, Mu);
 	array1to3(K, p, p, S1, S);
@@ -45,7 +55,9 @@ void runExactOverlap(int (*p1), int (*K1), double *Pi, double *Mu1, double *S1,
 
 	FREE_MATRIX(Mu);
 	FREE_3ARRAY(S);
-	FREE_MATRIX(OmegaMap);
+	//FREE_MATRIX(OmegaMap);
+	free(tmp_OmegaMap);
+	free(OmegaMap);
 
 }
 
@@ -64,6 +76,10 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1),
 	int fail1, p, K, lim, method, resN, sph, hom;
 	double BarOmega1, MaxOmega1, EigOmega1, Omega, PiLow, Lbound, Ubound, emax;
 
+	int i;
+	double *tmp_OmegaMap, *tmp_1;
+
+
 	GetRNGstate();
 
 	p = (*p1);
@@ -72,7 +88,14 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1),
 
 	MAKE_MATRIX(Mu, K, p);
 	MAKE_3ARRAY(S, K, p, p);
-	MAKE_MATRIX(OmegaMap, K, K);
+	// MAKE_MATRIX(OmegaMap, K, K);
+	tmp_OmegaMap = calloc(K * K, sizeof(double));
+	OmegaMap = (double**) calloc(K, sizeof(double*));
+	tmp_1 = tmp_OmegaMap;
+	for(i = 0; i < K; i++){
+		OmegaMap[i] = tmp_1;
+		tmp_1 = tmp_1 + K;
+	}
 
 	fail1 = (*fail);
 	lim = (*lim1);
@@ -102,7 +125,9 @@ void runOmegaClust(double (*Omega1), int (*method1), int (*p1), int (*K1),
 
 	FREE_MATRIX(Mu);
 	FREE_3ARRAY(S);
-	FREE_MATRIX(OmegaMap);
+	// FREE_MATRIX(OmegaMap);
+	free(tmp_OmegaMap);
+	free(OmegaMap);
 
 	PutRNGstate();
 
@@ -123,6 +148,9 @@ void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Lbound
 	int fail1, p, K, lim, resN, sph;
 	double BarOmega1, MaxOmega1, PiLow, Lbound, Ubound, emax;
 
+	int i;
+	double *tmp_OmegaMap, *tmp_1;
+
 
 	GetRNGstate();
 
@@ -133,7 +161,14 @@ void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Lbound
 
 	MAKE_MATRIX(Mu, K, p);
 	MAKE_3ARRAY(S, K, p, p);
-	MAKE_MATRIX(OmegaMap, K, K);
+	// MAKE_MATRIX(OmegaMap, K, K);
+	tmp_OmegaMap = calloc(K * K, sizeof(double));
+	OmegaMap = (double**) calloc(K, sizeof(double*));
+	tmp_1 = tmp_OmegaMap;
+	for(i = 0; i < K; i++){
+		OmegaMap[i] = tmp_1;
+		tmp_1 = tmp_1 + K;
+	}
 
 	fail1 = (*fail);
 	lim = (*lim1);
@@ -161,7 +196,9 @@ void runOmegaBarOmegaMax(int (*p1), int (*K1), double (*PiLow1), double (*Lbound
 
 	FREE_MATRIX(Mu);
 	FREE_3ARRAY(S);
-	FREE_MATRIX(OmegaMap);
+	// FREE_MATRIX(OmegaMap);
+	free(tmp_OmegaMap);
+	free(OmegaMap);
 
 	PutRNGstate();
 

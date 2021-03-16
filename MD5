@@ -1,6 +1,6 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-2ab39d024bd1076ac95cb79d19551b35 *ChangeLog
-e4ecfcf462c05b842ec10617f429ae0f *DESCRIPTION
+b80ca68031583d6e43a8520b64585f7c *ChangeLog
+ea57acc59244c289ae99d5453c930b8f *DESCRIPTION
 49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
@@ -25,7 +25,7 @@ e0dc546c616f08675e5b2adffc4c929e *demo/sec3.4_ex1.R
 c17cf52b8f4f9ce181a2b1c1482a1d59 *demo/sec3.4_ex2b.R
 d45fc3751e72738c0bde480bd238b822 *demo/sec3.4_ex2c.R
 e100816a70bc3eb3bf218c8b9c34a676 *demo/sec4_ex1.R
-9823c621c00063a38f3d43ba35124d08 *inst/CITATION
+d462924c852c39ad2cbaea8f0fe6032b *inst/CITATION
 adad82f197ee52183e98a16a45b8c56d *man/00_MixSim-package.Rd
 50405f4a4e5b9bab61b132502da23433 *man/ClassProp.Rd
 1101a9e2e6c10e50df5d4e8cb79ccc67 *man/MixGOM.Rd
@@ -47,7 +47,7 @@ d31d43abb4fac154089418383ee9da73 *src/Makevars
 d1efe0fff784fe7b44df3a896e6f136e *src/libEVD_LAPACK.c
 f5ba72d345e51a8861c47e3715fb8219 *src/libGenPars.c
 60cc83ebe53780e51db4e3db86869000 *src/libMatrix.c
-8eb69f2330cdbd999a58c1a3f19dfbfd *src/libMixSim.c
+c4ee35844d577f572c8d3e23883b3bed *src/libMixSim.c
 3f39ee6b5968be03628ee6420c72b8e5 *src/libOverlap.c
 e631ce046d167a42fd33a6ec379939ea *src/libQF.c
 a37ce031ffdcbb0db1031fe31558f6a0 *src/overlap.h

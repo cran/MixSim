@@ -1,3 +1,6 @@
+2021-03-08: Ver. 1.1-4
+  * Fix uninitialized issues caught by vigrind.
+
 2015-10-19: Ver. 1.1-2
   * Fix an adjR seg. fault.
 
