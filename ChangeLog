@@ -1,3 +1,6 @@
+2021-11-06: Ver. 1.1-5
+  * Update JSS paper DOI.
+
 2021-03-08: Ver. 1.1-4
   * Fix uninitialized issues caught by vigrind.
 
