@@ -81,7 +81,7 @@ void cephes_eigens(double *A, double *EV, double *E, int N)
 	double ANORM, ANORMX, AIA, THR, ALM, ALL, AMM, X, Y;
 	double SINX, SINX2, COSX, COSX2, SINCS, AIL, AIM;
 	double RLI, RMI;
-	double sqrt(), fabs();
+	double sqrt(double), fabs(double);
 	static double RANGE = 1.0e-10;	/* 3.0517578e-5; */
 
 	/* Initialize identity matrix in EV[] */

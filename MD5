@@ -1,6 +1,6 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-4d1af39fbffd48dc8fa4ea2940a614b0 *ChangeLog
-51ebaea8bfeac597735beaefdb36f6a7 *DESCRIPTION
+b451cb9cfa9ddcb918a1a80b9f80c943 *ChangeLog
+67c9ea843920db493887723c07e8cc58 *DESCRIPTION
 49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
@@ -42,7 +42,7 @@ d31d43abb4fac154089418383ee9da73 *src/Makevars
 2f7c5e80a9ba86296656ad4aa8bed025 *src/array.h
 8e9383adf3bf56f487a27112d6126cec *src/cephes_eigens.h
 8aba93d06b1bb58aed5571f1bfffdb7a *src/libAdjRand.c
-5a048fe4257f65e66668544388f0964e *src/libCEigen.c
+a098c075f42a42756d553cfde153f1cc *src/libCEigen.c
 85605791a6a3dd78e2e82b29ec01f525 *src/libEVD.c
 d1efe0fff784fe7b44df3a896e6f136e *src/libEVD_LAPACK.c
 f5ba72d345e51a8861c47e3715fb8219 *src/libGenPars.c
