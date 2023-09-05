@@ -1,5 +1,5 @@
 \name{MixSim-package}
-\alias{00_MixSim-package}
+\alias{MixSim-package}
 \docType{package}
 \title{
 Simulation of Gaussian Finite Mixture Models
@@ -8,13 +8,6 @@ Simulation of Gaussian Finite Mixture Models
 Simulation of Gaussian finite mixture models for prespecified levels of average or/and maximum overlap. Pairwise overlap is defined as the sum of two misclassification probabilities.
 }
 \details{
-\tabular{ll}{
-Package: \tab MixSim\cr
-Type: \tab Package\cr
-% Version: \tab 1.0\cr
-Date: \tab 2012-08-12\cr
-License: \tab GPL (>= 2)\cr
-}
 Function 'MixSim' simulates a finite mixture model for a prespecified level of average or/and maximum overlap.
 
 Function 'overlap' computes all misclassification probabilities for a finite mixture model.

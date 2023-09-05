@@ -1,6 +1,6 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-b451cb9cfa9ddcb918a1a80b9f80c943 *ChangeLog
-67c9ea843920db493887723c07e8cc58 *DESCRIPTION
+3f47635339ae406b6ee2488aaa8dc310 *ChangeLog
+8a9b2e4777e366c42f24b6e84bde9334 *DESCRIPTION
 49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
@@ -25,8 +25,8 @@ e0dc546c616f08675e5b2adffc4c929e *demo/sec3.4_ex1.R
 c17cf52b8f4f9ce181a2b1c1482a1d59 *demo/sec3.4_ex2b.R
 d45fc3751e72738c0bde480bd238b822 *demo/sec3.4_ex2c.R
 e100816a70bc3eb3bf218c8b9c34a676 *demo/sec4_ex1.R
-84b97396020b3c69e5d9be2327dea80a *inst/CITATION
-adad82f197ee52183e98a16a45b8c56d *man/00_MixSim-package.Rd
+8a7d1dce331d8a4ec01277f14f1440ea *inst/CITATION
+2e0df62e9920a653782a88b6e1316768 *man/00_MixSim-package.Rd
 50405f4a4e5b9bab61b132502da23433 *man/ClassProp.Rd
 1101a9e2e6c10e50df5d4e8cb79ccc67 *man/MixGOM.Rd
 6bf9921e77e93430c21217daa084e16a *man/MixSim.Rd
