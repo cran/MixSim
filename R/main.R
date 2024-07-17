@@ -59,6 +59,9 @@ MixSim <- function(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FA
 	if (resN < 1) stop("Wrong value of resN...\n")
 	if (eps <= 0) stop("Wrong value of eps...\n")
 	if (lim < 1) stop("Wrong value of lim...\n")
+	if (hom == TRUE && (!is.null(BarOmega)) && (!is.null(MaxOmega))){
+		stop("Unable to simulate a mixture model under specified settings...\n")
+        }
 
 
         Pi <- rep(0, K)

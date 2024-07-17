@@ -1,10 +1,10 @@
 726969cb60ce2a33a49219dd2b3e5d8b *COPYING
-3f47635339ae406b6ee2488aaa8dc310 *ChangeLog
-8a9b2e4777e366c42f24b6e84bde9334 *DESCRIPTION
+1fbbd142444dbd814420fdec8598e294 *ChangeLog
+418ef189c43b2c0c2b6db0fe466f4703 *DESCRIPTION
 49112edf7f8d8bc879aa70b5f58c06e2 *NAMESPACE
 c6e9af778caee7b4e459f90e388ccaed *R/libGen.R
 ee484845b8eb4b772a8932706247d2fb *R/libGraphics.R
-33afd366f950e67fe479b23bc33084cb *R/main.R
+f720c3787c52cf9c091d813f1f479a17 *R/main.R
 7b3efb8a1da7c0e62860ceac04f81e79 *R/zzz.R
 14d85d36e209075f031a8d9568cb15a7 *cleanup
 ed32045897ca3982971c3bd43c39e9dc *demo/00Index
@@ -29,7 +29,7 @@ e100816a70bc3eb3bf218c8b9c34a676 *demo/sec4_ex1.R
 2e0df62e9920a653782a88b6e1316768 *man/00_MixSim-package.Rd
 50405f4a4e5b9bab61b132502da23433 *man/ClassProp.Rd
 1101a9e2e6c10e50df5d4e8cb79ccc67 *man/MixGOM.Rd
-6bf9921e77e93430c21217daa084e16a *man/MixSim.Rd
+48eba5533b3660e1981af0ca99246402 *man/MixSim.Rd
 01ad249b3d68be9eafec0e9cb9db82f4 *man/RandIndex.Rd
 16959b661d400adbfe11affae3a8709b *man/VarInf.Rd
 497f25736f54e7327eab9e1e869d73bd *man/overlap.Rd

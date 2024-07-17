@@ -27,6 +27,8 @@ MixSim(BarOmega = NULL, MaxOmega = NULL, K, p, sph = FALSE, hom = FALSE,
 }
 \details{
   If 'BarOmega' is not specified, the function generates a mixture solely based on 'MaxOmega'; if 'MaxOmega' is not specified, the function generates a mixture solely based on 'BarOmega'.
+
+  If 'hom' is TRUE, only one of 'BarOmega' or 'MaxOmega' can be specified.
 }
 \value{
   \item{Pi }{vector of mixing proportions. }

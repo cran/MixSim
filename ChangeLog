@@ -1,3 +1,6 @@
+2024-07-16: Ver. 1.1-8
+  * Add check for hom == TRUE.
+
 2023-09-03: Ver. 1.1-7
   * Change to \alias{MixSim-package}.
   * Remove the meta table from the doc.
